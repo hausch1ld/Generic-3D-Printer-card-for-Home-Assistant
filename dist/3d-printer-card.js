@@ -2,28 +2,28 @@
  * Dependency-free Web Component
  */
 
-const CARD_VERSION = "0.5.0";
+const CARD_VERSION = "0.6.0";
 
 const TRANSLATIONS = {
   en: {
     general: "General", filaments: "Filaments", title: "Title", subtitle: "Subtitle", design: "Design", normal: "Normal", compact: "Compact", status_entity: "Status entity",
-    multi_filament: "Multi-filament system", title_alignment: "Title alignment", left: "Left", center: "Center", right: "Right", background_image: "Background image path", background_color: "Background color",
+    multi_filament: "Filaments", title_alignment: "Title alignment", left: "Left", center: "Center", right: "Right", background_image: "Background image path", background_color: "Background color", use_gradient: "Use color gradient",
     upload_image: "Upload or choose image", spool: "Spool", remove_spool: "Remove spool", label: "Label", spool_entity: "Spool entity", static_spool_image: "Static spool image path", add_spool: "Add spool",
-    printer: "3D printer", printer_image: "Printer image path", model_entity: "Model image entity", model_image: "Static model image path", model_size: "Model size", small: "Small", medium: "Medium", large: "Large", camera: "Camera", height: "Height in pixels", compact_height_hint: "Compact mode automatically reduces this height by 30%.",
-    progress: "Progress bar and information", progress_tab: "Progress", large_tab: "Large buttons", small_tab: "Small buttons", filename: "Filename", progress_entity: "Progress", info: "Info", info_entity: "Entity", add_info: "Add info", remove_info: "Remove info",
+    printer: "3D printer", printer_image: "Printer image path", model_entity: "Model image entity", model_image: "Static model image path", model_size: "Model image size", camera: "Camera", height: "Height in pixels", compact_height_hint: "Compact mode automatically reduces this height by 30%.",
+    progress: "Progress bar and information", progress_tab: "Progress", large_tab: "Large buttons", small_tab: "Small buttons", filename: "Filename", progress_entity: "Progress", progress_color: "Progress bar color", info: "Info", info_entity: "Entity", add_info: "Add info", remove_info: "Remove info",
     large_bar: "Large button bar", large_hint: "Up to four buttons. The large value is a sensor; the second entity is shown below and opens on click.", large_button: "Large button", remove_button: "Remove button", icon: "Icon", main_value: "Large value (sensor)", main_unit: "Large value unit", secondary_entity: "Small / clickable entity", secondary_label: "Small value label", secondary_unit: "Small value unit", add_button: "Add button",
-    small_bar: "Small button bar", small_hint: "Button entities are pressed; switches and lights are toggled. Compact mode places them vertically over the printer image.", small_button: "Small button", action_entity: "Button, switch or light",
-    target: "Target", configure_printer: "Configure printer image", toggle_camera: "Toggle printer and camera view", are_you_sure: "Are you sure?"
+    small_bar: "Small button bar", small_hint: "Button entities are pressed; switches and lights are toggled. Compact mode places them vertically over the printer image.", small_button: "Small button", action_entity: "Button, switch or light", button_layout: "Icon and label layout", icon_above: "Icon above label", icon_left: "Icon left of label", hide_icon: "Hide icon",
+    header: "Header", clear: "Clear", target: "Target", toggle_camera: "Toggle printer and camera view", are_you_sure: "Are you sure?"
   },
   de: {
     general: "Allgemein", filaments: "Filamente", title: "Titel", subtitle: "Untertitel", design: "Design", normal: "Normal", compact: "Kompakt", status_entity: "Status-Entität",
-    multi_filament: "Multi-Filament-System", title_alignment: "Titelausrichtung", left: "Links", center: "Zentriert", right: "Rechts", background_image: "Pfad zum Hintergrundbild", background_color: "Hintergrundfarbe",
+    multi_filament: "Filamente", title_alignment: "Titelausrichtung", left: "Links", center: "Zentriert", right: "Rechts", background_image: "Pfad zum Hintergrundbild", background_color: "Hintergrundfarbe", use_gradient: "Farbverlauf verwenden",
     upload_image: "Bild hochladen oder auswählen", spool: "Spule", remove_spool: "Spule entfernen", label: "Label", spool_entity: "Spulen-Entität", static_spool_image: "Pfad zum statischen Spulenbild", add_spool: "Spule hinzufügen",
-    printer: "3D-Drucker", printer_image: "Pfad zum Druckerbild", model_entity: "Model-Entität", model_image: "Pfad zum statischen Modellbild", model_size: "Modellgröße", small: "Klein", medium: "Mittel", large: "Groß", camera: "Kamera", height: "Höhe in Pixeln", compact_height_hint: "Im Kompaktmodus wird diese Höhe automatisch um 30 % reduziert.",
-    progress: "Fortschrittsbalken und Infos", progress_tab: "Fortschritt", large_tab: "Große Buttons", small_tab: "Kleine Buttons", filename: "Dateiname", progress_entity: "Fortschritt", info: "Info", info_entity: "Entität", add_info: "Info hinzufügen", remove_info: "Info entfernen",
+    printer: "3D-Drucker", printer_image: "Pfad zum Druckerbild", model_entity: "Model-Entität", model_image: "Pfad zum statischen Modellbild", model_size: "Größe des Modellbildes", camera: "Kamera", height: "Höhe in Pixeln", compact_height_hint: "Im Kompaktmodus wird diese Höhe automatisch um 30 % reduziert.",
+    progress: "Fortschrittsbalken und Infos", progress_tab: "Fortschritt", large_tab: "Große Buttons", small_tab: "Kleine Buttons", filename: "Dateiname", progress_entity: "Fortschritt", progress_color: "Farbe des Fortschrittsbalkens", info: "Info", info_entity: "Entität", add_info: "Info hinzufügen", remove_info: "Info entfernen",
     large_bar: "Große Buttonleiste", large_hint: "Bis zu vier Buttons. Der große Wert ist ein Sensor; die zweite Entität wird klein angezeigt und öffnet sich beim Anklicken.", large_button: "Großer Button", remove_button: "Button entfernen", icon: "Icon", main_value: "Großer Wert (Sensor)", main_unit: "Einheit großer Wert", secondary_entity: "Kleine / anklickbare Entität", secondary_label: "Label kleiner Wert", secondary_unit: "Einheit kleiner Wert", add_button: "Button hinzufügen",
-    small_bar: "Kleine Buttonleiste", small_hint: "Button-Entitäten werden gedrückt, Switches und Lights umgeschaltet. Im Kompaktmodus stehen sie vertikal über dem Druckerbild.", small_button: "Kleiner Button", action_entity: "Button, Switch oder Light",
-    target: "Ziel", configure_printer: "Druckerbild konfigurieren", toggle_camera: "Zwischen Drucker und Kamera wechseln", are_you_sure: "Bist du sicher?"
+    small_bar: "Kleine Buttonleiste", small_hint: "Button-Entitäten werden gedrückt, Switches und Lights umgeschaltet. Im Kompaktmodus stehen sie vertikal über dem Druckerbild.", small_button: "Kleiner Button", action_entity: "Button, Switch oder Light", button_layout: "Anordnung von Icon und Label", icon_above: "Icon über Label", icon_left: "Icon links vom Label", hide_icon: "Icon ausblenden",
+    header: "Kopfbereich", clear: "Leeren", target: "Ziel", toggle_camera: "Zwischen Drucker und Kamera wechseln", are_you_sure: "Bist du sicher?"
   }
 };
 
@@ -36,9 +36,11 @@ class ThreeDPrinterCard extends HTMLElement {
     return {
       name: "3D Printer",
       design: "normal",
-      model_size: "small",
-      sections: { multi_filament: true, printer: true, progress: true, large_buttons: true, small_buttons: true },
-      ace: { label: "", title_alignment: "left", spools: [] },
+      model_size: 30,
+      printer_use_gradient: true,
+      small_button_layout: "vertical",
+      sections: { header: true, multi_filament: true, printer: true, progress: true, large_buttons: true, small_buttons: true },
+      ace: { label: "", title_alignment: "left", use_gradient: true, spools: [] },
       large_buttons: [],
       small_buttons: []
     };
@@ -87,6 +89,15 @@ class ThreeDPrinterCard extends HTMLElement {
     if (Array.isArray(this._config?.small_buttons)) return this._config.small_buttons;
     const defaults = { pause: ["Pause", "mdi:pause"], resume: ["Resume", "mdi:play"], stop: ["Stop", "mdi:stop"], light: ["Light", "mdi:lightbulb"] };
     return Object.entries(this._config?.actions || {}).map(([key, value]) => ({ ...value, _legacyKey: key, label: value.label || defaults[key]?.[0], icon: value.icon || defaults[key]?.[1] }));
+  }
+
+  _modelScale() {
+    const value = this._config?.model_size;
+    if (value === "medium") return 65;
+    if (value === "large") return 100;
+    if (value === "small" || value == null || value === "") return 30;
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? Math.min(100, Math.max(1, numeric)) : 30;
   }
 
   _infos() {
@@ -213,8 +224,11 @@ class ThreeDPrinterCard extends HTMLElement {
     if (!ace) return "";
     const spools = (ace.spools || []).slice(0, 5);
     const title = String(ace.label || "").trim();
-    const backgroundStyle = compact ? "" : ` style="--ace-color:${this._escape(ace.background_color || "transparent")};${this._image(ace.image) ? `--ace-image:url('${this._escape(this._image(ace.image))}')` : ""}"`;
-    return `<section class="ace ${compact ? "ace-compact" : ""}"${backgroundStyle}>
+    const aceColor = ace.background_color || (ace.use_gradient !== false ? "#101113" : "transparent");
+    const backgroundStyle = compact ? "" : ` style="--ace-color:${this._escape(aceColor)};${this._image(ace.image) ? `--ace-image:url('${this._escape(this._image(ace.image))}')` : ""}"`;
+    const gradient = !compact && ace.use_gradient !== false ? " use-gradient" : "";
+    const fiveSpools = compact && spools.length === 5 ? " five-spools" : "";
+    return `<section class="ace ${compact ? "ace-compact" : ""}${gradient}${fiveSpools}"${backgroundStyle}>
       ${!compact && title ? `<div class="ace-title align-${this._escape(ace.title_alignment || "left")}">${this._escape(title)}</div>` : ""}
       <div class="spools" style="--spool-count:${Math.max(1, spools.length)}">${spools.map((spool, index) => {
         const entityId = spool.entity || spool.image_entity;
@@ -232,8 +246,8 @@ class ThreeDPrinterCard extends HTMLElement {
     const printer = this._image(this._config.printer_image);
     const model = this._image(this._config.model_image_entity) || this._image(this._config.model_image);
     return `<div class="printer-scene" data-view="printer">
-      ${printer ? `<img class="printer-image" src="${this._escape(printer)}" alt="3D printer">` : `<div class="image-placeholder"><ha-icon icon="mdi:printer-3d"></ha-icon><span>${this._escape(this._t("configure_printer"))}</span></div>`}
-      ${model ? `<img class="model-image" src="${this._escape(model)}" alt="Print model">` : ""}
+      ${printer ? `<img class="printer-image" src="${this._escape(printer)}" alt="">` : `<div class="image-placeholder"><ha-icon icon="mdi:printer-3d"></ha-icon></div>`}
+      ${model ? `<img class="model-image" src="${this._escape(model)}" alt="">` : ""}
     </div>`;
   }
 
@@ -249,11 +263,6 @@ class ThreeDPrinterCard extends HTMLElement {
 
   _render() {
     if (!this.shadowRoot || !this._config) return;
-    // HA supplies a new `hass` object very frequently. Preserve media nodes so
-    // images and camera streams are not torn down/reloaded on every state tick.
-    const previousVisual = this.shadowRoot.querySelector(".visual");
-    const previousAce = this.shadowRoot.querySelector(".ace");
-    const previousView = previousVisual?.dataset?.view;
     const c = this._config;
     const progressRaw = Number(this._value(c.progress_entity, 0));
     const progress = Number.isFinite(progressRaw) ? Math.min(100, Math.max(0, progressRaw)) : 0;
@@ -264,24 +273,22 @@ class ThreeDPrinterCard extends HTMLElement {
     const smallButtons = this._smallButtons();
     const compact = c.design === "compact";
     const printerHeight = Math.max(160, Number(c.printer_height) || 360);
+    const modelScale = this._modelScale();
+    const smallButtonLayout = ["horizontal", "text-only"].includes(c.small_button_layout) ? c.small_button_layout : "vertical";
     this.shadowRoot.innerHTML = `<style>${ThreeDPrinterCard.styles}</style>
-      <ha-card class="${compact ? "compact" : "normal"} model-size-${["medium", "large"].includes(c.model_size) ? c.model_size : "small"}" style="--printer-height:${printerHeight}px;--printer-color:${this._escape(c.printer_background_color || "#101113")}">
-        <header><div><h2>${this._escape(c.name || "3D Printer")}</h2>${c.subtitle ? `<p>${this._escape(c.subtitle)}</p>` : ""}</div><span class="status" data-status ${status ? "" : "hidden"}>${this._escape(status)}</span></header>
+      <ha-card class="${compact ? "compact" : "normal"} ${c.printer_use_gradient !== false ? "printer-gradient" : ""} small-buttons-${smallButtonLayout}" style="--printer-height:${printerHeight}px;--printer-color:${this._escape(c.printer_background_color || "#101113")};--model-size:${modelScale}%;--progress-color:${this._escape(c.progress_color || "var(--accent)")}">
+        ${this._section("header") ? `<header><div><h2>${this._escape(c.name || "3D Printer")}</h2>${c.subtitle ? `<p>${this._escape(c.subtitle)}</p>` : ""}</div><button type="button" class="status" data-status ${c.status_entity ? `data-more-info="${this._escape(c.status_entity)}"` : ""} ${status ? "" : "hidden"}>${this._escape(status)}</button></header>` : ""}
         ${!compact && this._section("multi_filament") ? this._spools() : ""}
         ${this._section("printer") ? `<div class="visual-wrap"><button class="visual" data-view="${this._showCamera ? "camera" : "printer"}" data-toggle-view aria-label="${this._escape(this._t("toggle_camera"))}">${this._visual()}</button>${compact && this._section("multi_filament") ? this._spools(true) : ""}<div class="visual-actions">${compact && this._section("small_buttons") ? smallButtons.slice(0, 4).map((button, index) => this._button(button, index)).join("") : ""}<button class="view-hint" data-toggle-view type="button" title="${this._escape(this._t("toggle_camera"))}"><ha-icon icon="${this._showCamera ? "mdi:printer-3d" : "mdi:cctv"}"></ha-icon></button></div></div>` : ""}
         ${this._section("progress") ? `<section class="job">
           <div class="job-line"><strong data-filename>${this._escape(name)}</strong><b data-progress-label>${Math.round(progress)}%</b></div>
           <div class="progress" data-progress role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"><i style="width:${progress}%"></i></div>
-          ${infos.length ? `<div class="details" style="--info-count:${infos.length}">${infos.map((info, index) => `<div><span>${this._escape(info.label || this._state(info.entity)?.attributes?.friendly_name || `${this._t("info")} ${index + 1}`)}</span><strong data-info="${index}">${this._infoValue(info)}</strong></div>`).join("")}</div>` : ""}
+          ${infos.length ? `<div class="details" style="--info-count:${infos.length}">${infos.map((info, index) => `<button type="button" class="info-entry" ${info.entity ? `data-more-info="${this._escape(info.entity)}"` : ""}><span>${this._escape(info.label || this._state(info.entity)?.attributes?.friendly_name || `${this._t("info")} ${index + 1}`)}</span><strong data-info="${index}">${this._infoValue(info)}</strong></button>`).join("")}</div>` : ""}
         </section>` : ""}
         ${this._section("large_buttons") && largeButtons.length ? `<section class="metrics" style="--button-count:${largeButtons.length}">${largeButtons.map((button, index) => this._metric(button, index)).join("")}</section>` : ""}
         ${!compact && this._section("small_buttons") && smallButtons.length ? `<footer style="--button-count:${smallButtons.length}">${smallButtons.map((button, index) => this._button(button, index)).join("")}</footer>` : ""}
       </ha-card>`;
 
-    const newVisual = this.shadowRoot.querySelector(".visual");
-    if (previousVisual && newVisual && previousView === newVisual.dataset.view) newVisual.replaceWith(previousVisual);
-    const newAce = this.shadowRoot.querySelector(".ace");
-    if (previousAce && newAce && previousAce.classList.contains("ace-compact") === newAce.classList.contains("ace-compact")) newAce.replaceWith(previousAce);
     this._updateMedia();
 
     if (this._showCamera && c.camera_entity && !this.shadowRoot.querySelector(".camera-host ha-camera-stream")) {
@@ -384,6 +391,15 @@ class ThreeDPrinterCard extends HTMLElement {
       this._render();
       return;
     }
+    const moreInfo = event.target.closest("[data-more-info]");
+    if (moreInfo?.dataset.moreInfo) {
+      this.dispatchEvent(new CustomEvent("hass-more-info", {
+        bubbles: true,
+        composed: true,
+        detail: { entityId: moreInfo.dataset.moreInfo }
+      }));
+      return;
+    }
     const metric = event.target.closest("[data-target-entity]");
     if (metric) {
       this.dispatchEvent(new CustomEvent("hass-more-info", {
@@ -450,28 +466,29 @@ class ThreeDPrinterCard extends HTMLElement {
     ha-card { overflow:hidden; padding:18px; }
     header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:14px; }
     h2 { font-size:20px; line-height:1.2; margin:0; } header p { color:var(--secondary-text-color); margin:4px 0 0; font-size:13px; }
-    .status { background:color-mix(in srgb,var(--accent) 18%,transparent); color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 35%,transparent); border-radius:999px; padding:5px 10px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
-    .ace { position:relative; min-height:112px; margin:0 0 12px; padding:12px 16px 10px; border-radius:14px; overflow:hidden; background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.025)),var(--ace-image) center/cover,var(--ace-color); border:1px solid rgba(255,255,255,.08); }
+    .status { cursor:pointer; background:color-mix(in srgb,var(--accent) 18%,transparent); color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 35%,transparent); border-radius:999px; padding:5px 10px; font:inherit; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+    .ace { position:relative; min-height:112px; margin:0 0 12px; padding:12px 16px 10px; border-radius:14px; overflow:hidden; background:var(--ace-image,none) center/cover,var(--ace-color,transparent); border:1px solid rgba(255,255,255,.08); }
+    .ace.use-gradient { background:radial-gradient(circle at 50% 55%,rgba(255,255,255,.08),transparent 55%),var(--ace-image,none) center/cover,var(--ace-color,transparent); }
     .ace-title { width:100%; color:var(--secondary-text-color); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; } .ace-title.align-left{text-align:left}.ace-title.align-center{text-align:center}.ace-title.align-right{text-align:right}
     .spools { display:grid; grid-template-columns:repeat(var(--spool-count),minmax(0,76px)); justify-content:center; gap:10px; max-width:440px; margin:8px auto 0; }
     .spool { min-width:0; text-align:center; } .spool img,.spool>span { display:block; width:58px; height:58px; max-width:100%; margin:auto; border-radius:50%; object-fit:contain; filter:drop-shadow(0 5px 6px rgba(0,0,0,.3)); }
     .spool>span { display:grid; place-items:center; border:5px solid rgba(255,255,255,.16); color:var(--secondary-text-color); }
     .spool small { display:block; overflow:hidden; margin-top:3px; color:var(--secondary-text-color); font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
-    .visual-wrap { position:relative; } .visual { position:relative; display:block; width:100%; height:var(--printer-height); max-height:70vh; margin:0; padding:0; overflow:hidden; cursor:pointer; color:inherit; background:radial-gradient(circle at 50% 55%,rgba(255,255,255,.08),transparent 55%),var(--printer-color); border:1px solid rgba(255,255,255,.08); border-radius:16px; }
+    .visual-wrap { position:relative; } .visual { position:relative; display:block; width:100%; height:var(--printer-height); max-height:70vh; margin:0; padding:0; overflow:hidden; cursor:pointer; color:inherit; background:var(--printer-color); border:1px solid rgba(255,255,255,.08); border-radius:16px; }
+    .printer-gradient .visual { background:radial-gradient(circle at 50% 55%,rgba(255,255,255,.08),transparent 55%),var(--printer-color); }
     .printer-scene,.camera-host,.camera-host ha-camera-stream { display:block; width:100%; height:100%; } .printer-scene { position:relative; }
     .printer-image { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
-    .model-image { position:absolute; left:50%; top:56%; width:30%; height:30%; object-fit:contain; transform:translate(-50%,-50%); filter:drop-shadow(0 8px 7px rgba(0,0,0,.5)); }
-    .model-size-medium .model-image { width:65%; height:65%; }
-    .model-size-large .model-image { inset:0; width:100%; height:100%; transform:none; }
+    .model-image { position:absolute; left:50%; top:50%; width:var(--model-size); height:var(--model-size); object-fit:contain; transform:translate(-50%,-50%); filter:drop-shadow(0 8px 7px rgba(0,0,0,.5)); }
     .image-placeholder { display:grid; place-content:center; height:100%; gap:8px; color:var(--secondary-text-color); } .image-placeholder ha-icon { width:52px;height:52px;margin:auto; }
     .visual-actions { position:absolute; right:10px; bottom:10px; left:10px; display:flex; justify-content:flex-end; align-items:center; gap:7px; pointer-events:none; } .visual-actions>*{pointer-events:auto}.view-hint { display:grid; flex:0 0 42px; width:42px; height:42px; padding:0; color:inherit; place-items:center; cursor:pointer; border:1px solid rgba(255,255,255,.12); border-radius:12px; background:rgba(0,0,0,.62); backdrop-filter:blur(8px); }
     .job { padding:18px 2px 14px; } .job-line { display:flex; justify-content:space-between; gap:12px; margin-bottom:9px; } .job-line strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .job-line b { color:var(--accent); }
-    .progress { height:8px; overflow:hidden; background:rgba(255,255,255,.1); border-radius:999px; } .progress i { display:block; height:100%; background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 65%,white)); border-radius:inherit; transition:width .35s ease; }
-    .details { display:grid; grid-template-columns:repeat(var(--info-count),minmax(0,1fr)); justify-content:center; gap:10px; max-width:calc(var(--info-count) * 25%); margin:14px auto 0; text-align:center; } .details div { min-width:0; } .details span,.target { display:block; overflow:hidden; color:var(--secondary-text-color); font-size:10px; text-overflow:ellipsis; text-transform:uppercase; white-space:nowrap; } .details strong { display:block; margin-top:3px; font-size:13px; }
+    .progress { height:8px; overflow:hidden; background:rgba(255,255,255,.1); border-radius:999px; } .progress i { display:block; height:100%; background:linear-gradient(90deg,var(--progress-color),color-mix(in srgb,var(--progress-color) 65%,white)); border-radius:inherit; transition:width .35s ease; }
+    .details { display:grid; grid-template-columns:repeat(var(--info-count),minmax(0,1fr)); justify-content:center; gap:10px; max-width:calc(var(--info-count) * 25%); margin:14px auto 0; text-align:center; } .info-entry { min-width:0; padding:0; cursor:pointer; color:inherit; font:inherit; background:none; border:0; } .details span,.target { display:block; overflow:hidden; color:var(--secondary-text-color); font-size:10px; text-overflow:ellipsis; text-transform:uppercase; white-space:nowrap; } .details strong { display:block; margin-top:3px; font-size:13px; }
     .metrics { display:grid; grid-template-columns:repeat(var(--button-count),1fr); gap:8px; padding:14px 0; border-top:1px solid rgba(255,255,255,.08); }
     .metric { min-width:0; padding:11px; text-align:center; color:inherit; font:inherit; background:rgba(127,127,127,.09); border:1px solid transparent; border-radius:12px; } .metric[data-target-entity] { cursor:pointer; } .metric[data-target-entity]:hover { background:color-mix(in srgb,var(--accent) 12%,rgba(127,127,127,.09)); border-color:color-mix(in srgb,var(--accent) 25%,transparent); } .metric-main{display:block}.metric-head { display:flex; min-height:18px; align-items:center; justify-content:center; gap:5px; color:var(--secondary-text-color); font-size:11px; } .normal .metric.has-label .metric-head ha-icon{display:none}.metric-head ha-icon { width:19px;height:19px; } .metric-value { margin:6px 0 3px; font-size:20px; font-weight:700; } .unit { font-size:.65em;color:var(--secondary-text-color); } .target { text-transform:none; } .missing { opacity:.65; }
-    footer { display:grid; grid-template-columns:repeat(var(--button-count),1fr); gap:8px; padding-top:3px; } .action { display:flex; min-width:0; min-height:48px; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; color:var(--primary-text-color); background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.06); border-radius:12px; } .action:hover { background:color-mix(in srgb,var(--accent) 16%,rgba(255,255,255,.06)); } .action ha-icon { width:21px;height:21px; } .action span { overflow:hidden; max-width:100%; font-size:10px; text-overflow:ellipsis; }
+    footer { display:grid; grid-template-columns:repeat(var(--button-count),1fr); gap:8px; padding-top:3px; } .action { display:flex; min-width:0; min-height:48px; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; color:var(--primary-text-color); background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.06); border-radius:12px; } .action:hover { background:color-mix(in srgb,var(--accent) 16%,rgba(255,255,255,.06)); } .action ha-icon { width:21px;height:21px; } .action span { overflow:hidden; max-width:100%; font-size:10px; text-overflow:ellipsis; } .normal.small-buttons-horizontal .action{flex-direction:row;gap:7px}.normal.small-buttons-text-only .action ha-icon{display:none}
     .compact .visual{height:calc(var(--printer-height) * .7)}.compact .ace-compact{position:absolute;z-index:2;top:50%;left:10px;width:48px;min-height:0;margin:0;padding:0;overflow:visible;transform:translateY(-50%);background:none;border:0}.compact .ace-compact .spools{display:flex;max-width:none;margin:0;flex-direction:column;gap:6px}.compact .ace-compact .spool{display:grid;width:48px;min-height:42px;padding:6px 2px 3px;place-items:center;border:1px solid rgba(255,255,255,.08);border-radius:10px;background:rgba(0,0,0,.62);backdrop-filter:blur(8px)}.compact .ace-compact .spool img,.compact .ace-compact .spool>span{width:25px;height:25px}.compact .ace-compact .spool small{max-width:43px;margin-top:1px;color:#ddd;font-size:7px}.compact .visual-actions{top:50%;right:10px;bottom:auto;left:auto;flex-direction:column;justify-content:center;gap:6px;transform:translateY(-50%)}.compact .visual-actions .action,.compact .view-hint{flex:0 0 42px;width:42px;min-width:42px;min-height:42px;height:42px;padding:0;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(0,0,0,.62);backdrop-filter:blur(8px)}.compact .visual-actions .action ha-icon,.compact .view-hint ha-icon{width:21px;height:21px}.compact .visual-actions .action span{display:none}.compact .metric{padding:8px 10px}.compact .metric-main{display:flex;align-items:center;justify-content:center;gap:10px}.compact .metric-head span{display:none}.compact .metric-head ha-icon{display:block;width:22px;height:22px}.compact .metric-value{margin:0;font-size:20px}.compact .target{margin-top:4px}
+    .compact .ace-compact.five-spools{width:44px}.compact .ace-compact.five-spools .spools{gap:4px}.compact .ace-compact.five-spools .spool{width:44px;min-height:36px;padding:4px 2px 2px}.compact .ace-compact.five-spools .spool img,.compact .ace-compact.five-spools .spool>span{width:21px;height:21px}.compact .ace-compact.five-spools .spool small{max-width:39px;font-size:6px}
     @media(max-width:460px){ ha-card{padding:13px}.spools{gap:5px;grid-template-columns:repeat(var(--spool-count),minmax(0,54px))}.normal .spool img,.normal .spool>span{width:48px;height:48px}.metric{padding:9px 5px}.metric-value{font-size:17px}.metrics{grid-template-columns:repeat(2,1fr)} }
   `; }
 }
@@ -482,6 +499,7 @@ class ThreeDPrinterCardEditor extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this._activeTab = "general";
     this._onChange = (event) => this._handleChange(event);
+    this._onInput = (event) => this._handleInput(event);
     this._onValueChanged = (event) => this._handleSelector(event);
     this._onClick = (event) => this._handleClick(event);
   }
@@ -525,6 +543,7 @@ class ThreeDPrinterCardEditor extends HTMLElement {
 
   connectedCallback() {
     this.shadowRoot.addEventListener("change", this._onChange);
+    this.shadowRoot.addEventListener("input", this._onInput);
     this.shadowRoot.addEventListener("value-changed", this._onValueChanged);
     this.shadowRoot.addEventListener("click", this._onClick);
     this._render();
@@ -532,6 +551,7 @@ class ThreeDPrinterCardEditor extends HTMLElement {
 
   disconnectedCallback() {
     this.shadowRoot.removeEventListener("change", this._onChange);
+    this.shadowRoot.removeEventListener("input", this._onInput);
     this.shadowRoot.removeEventListener("value-changed", this._onValueChanged);
     this.shadowRoot.removeEventListener("click", this._onClick);
   }
@@ -575,7 +595,18 @@ class ThreeDPrinterCardEditor extends HTMLElement {
   }
 
   _selector(label, path, selector) {
-    return `<label class="selector"><span>${label}</span><ha-selector data-path="${this._path(path)}" data-selector="${this._escape(JSON.stringify(selector))}"></ha-selector></label>`;
+    const clearable = selector.entity || selector.icon;
+    return `<div class="selector"><span class="field-heading"><span>${label}</span>${clearable && this._get(path, "") ? `<button type="button" class="clear" data-clear-path="${this._path(path)}">${this._t("clear")}</button>` : ""}</span><ha-selector data-path="${this._path(path)}" data-selector="${this._escape(JSON.stringify(selector))}"></ha-selector></div>`;
+  }
+
+  _range(label, path, value, min = 1, max = 100) {
+    return `<label class="range"><span class="field-heading"><span>${label}</span><output>${value}%</output></span><input type="range" data-path="${this._path(path)}" value="${value}" min="${min}" max="${max}" step="1"></label>`;
+  }
+
+  _colorField(label, path, fallback = "#03a9f4") {
+    const value = this._get(path, "");
+    const color = /^#[0-9a-f]{6}$/i.test(value) ? value : fallback;
+    return `<label><span class="field-heading"><span>${label}</span>${value ? `<button type="button" class="clear" data-clear-path="${this._path(path)}">${this._t("clear")}</button>` : ""}</span><input type="color" data-path="${this._path(path)}" value="${color}"></label>`;
   }
 
   _imageField(label, path) {
@@ -583,8 +614,12 @@ class ThreeDPrinterCardEditor extends HTMLElement {
   }
 
   _toggle(name, title) {
-    const enabled = this._get(["sections", name], true) !== false;
-    return `<label class="toggle"><span>${title}</span><input type="checkbox" data-path="${this._path(["sections", name])}" ${enabled ? "checked" : ""}></label>`;
+    return this._boolean(["sections", name], title);
+  }
+
+  _boolean(path, title, defaultValue = true) {
+    const enabled = this._get(path, defaultValue) !== false;
+    return `<label class="toggle"><span>${title}</span><input type="checkbox" data-path="${this._path(path)}" ${enabled ? "checked" : ""}></label>`;
   }
 
   _spoolEditor(spool, index) {
@@ -635,20 +670,22 @@ class ThreeDPrinterCardEditor extends HTMLElement {
     const infos = Array.isArray(this._config.infos) ? this._config.infos.slice(0, 4) : [];
     const largeButtons = Array.isArray(this._config.large_buttons) ? this._config.large_buttons.slice(0, 4) : [];
     const smallButtons = Array.isArray(this._config.small_buttons) ? this._config.small_buttons : [];
+    const rawModelSize = this._get(["model_size"], 30);
+    const modelScale = rawModelSize === "medium" ? 65 : rawModelSize === "large" ? 100 : rawModelSize === "small" ? 30 : Math.min(100, Math.max(1, Number(rawModelSize) || 30));
     const tabs = [
       ["general", this._t("general")], ["filaments", this._t("filaments")], ["printer", this._t("printer")],
       ["progress", this._t("progress_tab")], ["large", this._t("large_tab")], ["small", this._t("small_tab")]
     ];
     const tab = tabs.some(([key]) => key === this._activeTab) ? this._activeTab : "general";
     let content = "";
-    if (tab === "general") content = `<section class="panel"><h3>${this._t("general")}</h3><div class="grid">${this._input(this._t("title"), ["name"])}${this._input(this._t("subtitle"), ["subtitle"])}<label><span>${this._t("design")}</span><select data-path="${this._path(["design"])}"><option value="normal" ${this._get(["design"], "normal") === "normal" ? "selected" : ""}>${this._t("normal")}</option><option value="compact" ${this._get(["design"]) === "compact" ? "selected" : ""}>${this._t("compact")}</option></select></label>${this._selector(this._t("status_entity"), ["status_entity"], { entity: {} })}</div></section>`;
-    else if (tab === "filaments") content = `<section class="panel">${this._toggle("multi_filament", this._t("multi_filament"))}<div class="grid">${this._input(this._t("title"), ["ace", "label"])}<label><span>${this._t("title_alignment")}</span><select data-path="${this._path(["ace", "title_alignment"])}"><option value="left" ${ace.title_alignment !== "center" && ace.title_alignment !== "right" ? "selected" : ""}>${this._t("left")}</option><option value="center" ${ace.title_alignment === "center" ? "selected" : ""}>${this._t("center")}</option><option value="right" ${ace.title_alignment === "right" ? "selected" : ""}>${this._t("right")}</option></select></label>${this._imageField(this._t("background_image"), ["ace", "image"])}${this._input(this._t("background_color"), ["ace", "background_color"], "color")}</div>${spools.map((spool, index) => this._spoolEditor(spool, index)).join("")}${spools.length < 5 ? `<button type="button" class="add" data-add-spool><ha-icon icon="mdi:plus"></ha-icon>${this._t("add_spool")}</button>` : ""}</section>`;
-    else if (tab === "printer") content = `<section class="panel">${this._toggle("printer", this._t("printer"))}<div class="grid">${this._imageField(this._t("printer_image"), ["printer_image"])}${this._input(this._t("background_color"), ["printer_background_color"], "color")}${this._selector(this._t("model_entity"), ["model_image_entity"], { entity: { domain: "image" } })}${this._imageField(this._t("model_image"), ["model_image"])}<label><span>${this._t("model_size")}</span><select data-path="${this._path(["model_size"])}"><option value="small" ${!["medium", "large"].includes(this._get(["model_size"])) ? "selected" : ""}>${this._t("small")}</option><option value="medium" ${this._get(["model_size"]) === "medium" ? "selected" : ""}>${this._t("medium")}</option><option value="large" ${this._get(["model_size"]) === "large" ? "selected" : ""}>${this._t("large")}</option></select></label>${this._selector(this._t("camera"), ["camera_entity"], { entity: { domain: "camera" } })}${this._input(this._t("height"), ["printer_height"], "number", 'min="160" max="900" step="10"')}</div><p class="hint">${this._t("compact_height_hint")}</p></section>`;
-    else if (tab === "progress") content = `<section class="panel">${this._toggle("progress", this._t("progress"))}<div class="grid">${this._selector(this._t("filename"), ["filename_entity"], { entity: {} })}${this._selector(this._t("progress_entity"), ["progress_entity"], { entity: {} })}</div>${infos.map((info, index) => this._infoEditor(info, index)).join("")}${infos.length < 4 ? `<button type="button" class="add" data-add-info><ha-icon icon="mdi:plus"></ha-icon>${this._t("add_info")}</button>` : ""}</section>`;
+    if (tab === "general") content = `<section class="panel"><h3>${this._t("general")}</h3>${this._toggle("header", this._t("header"))}<div class="grid">${this._input(this._t("title"), ["name"])}${this._input(this._t("subtitle"), ["subtitle"])}<label><span>${this._t("design")}</span><select data-path="${this._path(["design"])}"><option value="normal" ${this._get(["design"], "normal") === "normal" ? "selected" : ""}>${this._t("normal")}</option><option value="compact" ${this._get(["design"]) === "compact" ? "selected" : ""}>${this._t("compact")}</option></select></label>${this._selector(this._t("status_entity"), ["status_entity"], { entity: {} })}</div></section>`;
+    else if (tab === "filaments") content = `<section class="panel">${this._toggle("multi_filament", this._t("multi_filament"))}<div class="grid">${this._input(this._t("title"), ["ace", "label"])}<label><span>${this._t("title_alignment")}</span><select data-path="${this._path(["ace", "title_alignment"])}"><option value="left" ${ace.title_alignment !== "center" && ace.title_alignment !== "right" ? "selected" : ""}>${this._t("left")}</option><option value="center" ${ace.title_alignment === "center" ? "selected" : ""}>${this._t("center")}</option><option value="right" ${ace.title_alignment === "right" ? "selected" : ""}>${this._t("right")}</option></select></label>${this._imageField(this._t("background_image"), ["ace", "image"])}${this._colorField(this._t("background_color"), ["ace", "background_color"], "#20242a")}${this._boolean(["ace", "use_gradient"], this._t("use_gradient"))}</div>${spools.map((spool, index) => this._spoolEditor(spool, index)).join("")}${spools.length < 5 ? `<button type="button" class="add" data-add-spool><ha-icon icon="mdi:plus"></ha-icon>${this._t("add_spool")}</button>` : ""}</section>`;
+    else if (tab === "printer") content = `<section class="panel">${this._toggle("printer", this._t("printer"))}<div class="grid">${this._imageField(this._t("printer_image"), ["printer_image"])}${this._colorField(this._t("background_color"), ["printer_background_color"], "#101113")}${this._boolean(["printer_use_gradient"], this._t("use_gradient"))}${this._selector(this._t("model_entity"), ["model_image_entity"], { entity: { domain: "image" } })}${this._imageField(this._t("model_image"), ["model_image"])}${this._range(this._t("model_size"), ["model_size"], modelScale)}${this._selector(this._t("camera"), ["camera_entity"], { entity: { domain: "camera" } })}${this._input(this._t("height"), ["printer_height"], "number", 'min="160" max="900" step="10"')}</div><p class="hint">${this._t("compact_height_hint")}</p></section>`;
+    else if (tab === "progress") content = `<section class="panel">${this._toggle("progress", this._t("progress"))}<div class="grid">${this._selector(this._t("filename"), ["filename_entity"], { entity: {} })}${this._selector(this._t("progress_entity"), ["progress_entity"], { entity: {} })}${this._colorField(this._t("progress_color"), ["progress_color"])}</div>${infos.map((info, index) => this._infoEditor(info, index)).join("")}${infos.length < 4 ? `<button type="button" class="add" data-add-info><ha-icon icon="mdi:plus"></ha-icon>${this._t("add_info")}</button>` : ""}</section>`;
     else if (tab === "large") content = `<section class="panel">${this._toggle("large_buttons", this._t("large_bar"))}<p class="hint">${this._t("large_hint")}</p>${largeButtons.map((button, index) => this._largeButtonEditor(button, index)).join("")}${largeButtons.length < 4 ? `<button type="button" class="add" data-add-large><ha-icon icon="mdi:plus"></ha-icon>${this._t("add_button")}</button>` : ""}</section>`;
-    else content = `<section class="panel">${this._toggle("small_buttons", this._t("small_bar"))}<p class="hint">${this._t("small_hint")}</p>${smallButtons.map((button, index) => this._smallButtonEditor(button, index)).join("")}<button type="button" class="add" data-add-small><ha-icon icon="mdi:plus"></ha-icon>${this._t("add_button")}</button></section>`;
+    else content = `<section class="panel">${this._toggle("small_buttons", this._t("small_bar"))}<div class="grid"><label><span>${this._t("button_layout")}</span><select data-path="${this._path(["small_button_layout"])}"><option value="vertical" ${!["horizontal", "text-only"].includes(this._get(["small_button_layout"])) ? "selected" : ""}>${this._t("icon_above")}</option><option value="horizontal" ${this._get(["small_button_layout"]) === "horizontal" ? "selected" : ""}>${this._t("icon_left")}</option><option value="text-only" ${this._get(["small_button_layout"]) === "text-only" ? "selected" : ""}>${this._t("hide_icon")}</option></select></label></div><p class="hint">${this._t("small_hint")}</p>${smallButtons.map((button, index) => this._smallButtonEditor(button, index)).join("")}<button type="button" class="add" data-add-small><ha-icon icon="mdi:plus"></ha-icon>${this._t("add_button")}</button></section>`;
     this.shadowRoot.innerHTML = `<style>
-      :host{display:block;max-width:100%;container-type:inline-size;color:var(--primary-text-color);font-family:var(--paper-font-body1_-_font-family,inherit)}*{box-sizing:border-box;min-width:0}.editor{display:grid;max-width:100%;gap:12px;padding:4px 0 16px;overflow:hidden}.tabs{display:flex;max-width:100%;gap:3px;overflow-x:auto;border-bottom:1px solid var(--divider-color);scrollbar-width:thin}.tab{flex:0 0 auto;padding:10px 12px;color:var(--secondary-text-color);font:inherit;font-size:12px;font-weight:600;cursor:pointer;background:none;border:0;border-bottom:2px solid transparent}.tab[aria-selected="true"]{color:var(--primary-color);border-bottom-color:var(--primary-color)}.panel{max-width:100%;padding:12px;border:1px solid var(--divider-color);border-radius:12px;background:var(--card-background-color)}.panel>h3{margin:0 0 12px;font-size:16px}.toggle{display:flex;align-items:center;justify-content:space-between;font-weight:700}.toggle input{width:20px;height:20px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}label:not(.toggle),.selector,.image-field{display:grid;max-width:100%;align-content:start;gap:6px;min-width:0}label>span{overflow:hidden;color:var(--secondary-text-color);font-size:12px;text-overflow:ellipsis;white-space:nowrap}ha-selector{display:block;width:100%;max-width:100%;min-width:0;overflow:hidden}input,select{width:100%;max-width:100%;min-height:42px;padding:8px 10px;color:var(--primary-text-color);background:transparent;border:1px solid var(--divider-color);border-radius:8px;font:inherit}.image-field{grid-column:1/-1;padding:8px;border:1px solid var(--divider-color);border-radius:8px}.item{max-width:100%;margin-top:12px;padding:10px;overflow:hidden;border:1px solid var(--divider-color);border-radius:10px}.item-head{display:flex;align-items:center;justify-content:space-between}.remove,.add{display:inline-grid;place-items:center;min-width:36px;height:36px;padding:0 10px;color:var(--primary-text-color);cursor:pointer;background:var(--secondary-background-color);border:0;border-radius:8px}.add{display:flex;gap:6px;margin-top:12px}.remove ha-icon,.add ha-icon{width:20px;height:20px}.hint{margin:8px 0 0;color:var(--secondary-text-color);font-size:12px;line-height:1.4}@container(max-width:560px){.grid{grid-template-columns:1fr}}@media(max-width:700px){.grid{grid-template-columns:1fr}}
+      :host{display:block;max-width:100%;container-type:inline-size;color:var(--primary-text-color);font-family:var(--paper-font-body1_-_font-family,inherit)}*{box-sizing:border-box;min-width:0}.editor{display:grid;max-width:100%;gap:12px;padding:4px 0 16px;overflow:hidden}.tabs{display:flex;max-width:100%;gap:3px;overflow-x:auto;border-bottom:1px solid var(--divider-color);scrollbar-width:thin}.tab{flex:0 0 auto;padding:10px 12px;color:var(--secondary-text-color);font:inherit;font-size:12px;font-weight:600;cursor:pointer;background:none;border:0;border-bottom:2px solid transparent}.tab[aria-selected="true"]{color:var(--primary-color);border-bottom-color:var(--primary-color)}.panel{max-width:100%;padding:12px;border:1px solid var(--divider-color);border-radius:12px;background:var(--card-background-color)}.panel>h3{margin:0 0 12px;font-size:16px}.toggle{display:flex;align-items:center;justify-content:space-between;font-weight:700}.toggle input{width:20px;height:20px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}label:not(.toggle),.selector,.image-field{display:grid;max-width:100%;align-content:start;gap:6px;min-width:0}label>span{overflow:hidden;color:var(--secondary-text-color);font-size:12px;text-overflow:ellipsis;white-space:nowrap}.field-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.field-heading>span{overflow:hidden;text-overflow:ellipsis}.clear{padding:0;color:var(--primary-color);font:inherit;font-size:11px;cursor:pointer;background:none;border:0}.range output{color:var(--primary-text-color);font-weight:700}ha-selector{display:block;width:100%;max-width:100%;min-width:0;overflow:hidden}input,select{width:100%;max-width:100%;min-height:42px;padding:8px 10px;color:var(--primary-text-color);background:transparent;border:1px solid var(--divider-color);border-radius:8px;font:inherit}input[type="range"]{padding:0;border:0}.image-field{grid-column:1/-1;padding:8px;border:1px solid var(--divider-color);border-radius:8px}.item{max-width:100%;margin-top:12px;padding:10px;overflow:hidden;border:1px solid var(--divider-color);border-radius:10px}.item-head{display:flex;align-items:center;justify-content:space-between}.remove,.add{display:inline-grid;place-items:center;min-width:36px;height:36px;padding:0 10px;color:var(--primary-text-color);cursor:pointer;background:var(--secondary-background-color);border:0;border-radius:8px}.add{display:flex;gap:6px;margin-top:12px}.remove ha-icon,.add ha-icon{width:20px;height:20px}.hint{margin:8px 0 0;color:var(--secondary-text-color);font-size:12px;line-height:1.4}@container(max-width:560px){.grid{grid-template-columns:1fr}}@media(max-width:700px){.grid{grid-template-columns:1fr}}
     </style><div class="editor"><nav class="tabs" role="tablist">${tabs.map(([key, label]) => `<button type="button" class="tab" role="tab" data-editor-tab="${key}" aria-selected="${tab === key}">${label}</button>`).join("")}</nav>${content}</div>`;
     this.shadowRoot.querySelectorAll("ha-selector").forEach((element) => {
       const path = JSON.parse(element.dataset.path);
@@ -664,9 +701,17 @@ class ThreeDPrinterCardEditor extends HTMLElement {
   _handleChange(event) {
     const field = event.target.closest("[data-path]");
     if (!field || field.localName === "ha-selector") return;
+    if (field.type === "range") return;
     const path = JSON.parse(field.dataset.path);
     const value = field.type === "checkbox" ? field.checked : field.type === "number" ? (field.value === "" ? "" : Number(field.value)) : field.value;
     this._set(path, value);
+  }
+
+  _handleInput(event) {
+    const field = event.target.closest('input[type="range"][data-path]');
+    if (!field) return;
+    field.closest("label")?.querySelector("output")?.replaceChildren(`${field.value}%`);
+    this._set(JSON.parse(field.dataset.path), Number(field.value));
   }
 
   _handleSelector(event) {
@@ -697,6 +742,11 @@ class ThreeDPrinterCardEditor extends HTMLElement {
       this._render();
       return;
     }
+    if (action.dataset.clearPath) {
+      this._set(JSON.parse(action.dataset.clearPath), "");
+      this._render();
+      return;
+    }
     const next = JSON.parse(JSON.stringify(this._config || {}));
     if (action.hasAttribute("data-add-spool")) {
       next.ace ||= {}; next.ace.spools ||= []; if (next.ace.spools.length < 5) next.ace.spools.push({});
@@ -719,5 +769,5 @@ class ThreeDPrinterCardEditor extends HTMLElement {
 if (!customElements.get("three-d-printer-card")) customElements.define("three-d-printer-card", ThreeDPrinterCard);
 if (!customElements.get("three-d-printer-card-editor")) customElements.define("three-d-printer-card-editor", ThreeDPrinterCardEditor);
 window.customCards = window.customCards || [];
-window.customCards.push({ type: "three-d-printer-card", name: "3D Printer Card", description: "Generic 3D printer dashboard with camera, ACE/AMS and controls", preview: true });
+window.customCards.push({ type: "three-d-printer-card", name: "Universal 3D Printer Card", description: "Universal 3D printer dashboard with camera, filaments and controls", preview: true });
 console.info(`%c 3D-PRINTER-CARD %c v${CARD_VERSION} `, "color:white;background:#03a9f4;font-weight:bold", "color:#03a9f4;background:#222");
