@@ -5,8 +5,11 @@ A configurable Lovelace dashboard card for 3D printers. It combines a printer vi
 The card does not hardcode Anycubic or other manufacturer-specific entity names. All entities, images, labels and actions are configured in YAML.
 
 <p align="center">
-  <img width="45%" alt="3D Printer Card overview" src="https://github.com/user-attachments/assets/c3ee6c92-2863-430f-a509-988aaff2e915">
-  <img width="45%" alt="3D Printer Card camera view" src="https://github.com/user-attachments/assets/8a6a4290-3795-4033-a245-9fdd8fcbd444">
+<img width="20%" height="748" alt="Bildschirmfoto 2026-08-08 um 18 48 12" src="https://github.com/user-attachments/assets/ccec5c97-fc1a-4061-87d2-ea7bf9e13a9d" />
+<img width="20%" height="599" alt="Bildschirmfoto 2026-08-08 um 18 47 48" src="https://github.com/user-attachments/assets/7b4ea512-93ee-4c58-ac5a-f0938e9c54cf"/>
+<img width="20%" <img width="526" height="789" alt="Bildschirmfoto 2026-08-08 um 18 45 41" src="https://github.com/user-attachments/assets/e50f75c4-3ac1-43f1-a485-3029f1143881" />
+<img width="20%" height="818" alt="Bildschirmfoto 2026-08-08 um 18 49 32" src="https://github.com/user-attachments/assets/76840c14-372c-4347-a30e-8f887504ef82" />
+
 </p>
 
 ## Features
