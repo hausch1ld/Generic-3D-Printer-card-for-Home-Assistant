@@ -24,6 +24,9 @@ The card does not hardcode Anycubic or other manufacturer-specific entity names.
 - Normal and compact layouts
 - Image path fields plus Home Assistant's native image upload/media picker
 - Automatic English/German editor localization
+- Tabbed visual editor that keeps its active position while values are changed
+- Home Assistant entity display precision for sensor and information values
+- Small, medium and large model image sizes
 - Stable display for missing, `unknown` and `unavailable` entities
 - Responsive design using the active Home Assistant theme in light and dark mode
 
@@ -99,6 +102,8 @@ See [`example.yaml`](example.yaml) for a complete configuration with ACE/AMS, me
 | `name`, `subtitle` | Card title and optional subtitle |
 | `printer_image` | Image URL, `/local/...` path or image entity |
 | `model_image_entity` | Current model image entity |
+| `model_image` | Static model image fallback |
+| `model_size` | `small` (default), `medium` or `large` |
 | `camera_entity` | Camera entity used for the live view |
 | `default_view` | Set to `camera` to start in camera view |
 | `status_entity` | Printer status |
@@ -143,7 +148,11 @@ The compact design places up to four small action buttons in a centered vertical
 
 ### Compact design
 
-Set `design: compact` in YAML or select **Compact** in the editor. The printer area becomes 30% shorter. Up to five filament spools move into a vertically centered translucent overlay on its left side, while the action controls are centered on the right. The large metric buttons use a shorter horizontal icon/value layout. Images continue to use `object-fit: contain`, preserving their aspect ratio.
+Set `design: compact` in YAML or select **Compact** in the editor. The printer area becomes 30% shorter. Up to five filament spools move into a vertically centered translucent overlay on its left side, while the action controls are centered on the right. The configured Multi-Filament background image and color are intentionally ignored in this layout. The large metric buttons use a shorter horizontal icon/value layout. Images continue to use `object-fit: contain`, preserving their aspect ratio.
+
+The model image defaults to `small`, which matches the original card size. `medium` uses the midpoint between the original and full-area dimensions, while `large` uses the complete printer viewport and keeps the image aspect ratio with `object-fit: contain`.
+
+Numeric entity values are formatted through Home Assistant itself. This means the card follows the display precision configured in the entity settings, including locale-specific decimal separators.
 
 The outer card does not override Home Assistant's `ha-card` background, so it follows the active light, dark or custom theme exactly.
 
@@ -151,6 +160,6 @@ Unconfigured sections and buttons are hidden. Missing, `unknown` and `unavailabl
 
 ## Version
 
-Current build: **0.4.0**
+Current build: **0.5.0**
 
 This card has been tested with [hass-anycubic](https://github.com/Nino6689/hass-anycubic) by [@Nino6689](https://github.com/Nino6689), but is designed to work with any integration that exposes suitable Home Assistant entities.

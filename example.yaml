@@ -29,6 +29,7 @@ printer_background_color: "#101113"
 printer_height: 400
 model_image_entity: image.3d_drucker_druckvorschau
 # model_image: /local/3d-printer-card/model.png
+model_size: small # small, medium or large
 camera_entity: camera.buro_3d_drucker_cloud_camera
 
 filename_entity: sensor.3d_drucker_druckauftrag
