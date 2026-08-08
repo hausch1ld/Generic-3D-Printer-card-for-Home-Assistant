@@ -1,4 +1,4 @@
-# Generic-3D-Printer-card-for-Home-Assistant-
+# Generic 3D printer card for Home-Assistant
 This is a dashboard card for 3D printers with customizable entities and images
 
 This is a **very first version** of the dashboard card. It's tested with [@Nino6689](https://github.com/Nino6689)s impressive [hass-anycubic](https://github.com/Nino6689/hass-anycubic) integration but the card should be compatible with many 3D printers with entities for each function.
