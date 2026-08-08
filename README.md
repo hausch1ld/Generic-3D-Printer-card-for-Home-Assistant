@@ -30,6 +30,8 @@ The card does not hardcode Anycubic or other manufacturer-specific entity names.
 - Tabbed visual editor that keeps its active position while values are changed
 - Home Assistant entity display precision for sensor and information values
 - Model image size slider from 1% to 100%
+- Vertical model positioning from the top to the bottom edge
+- Configurable icon placement for information and both button bars
 - Optional themed/custom progress color and background gradients
 - Clickable status and information values
 - Stable display for missing, `unknown` and `unavailable` entities
@@ -109,12 +111,14 @@ See [`example.yaml`](example.yaml) for a complete configuration with ACE/AMS, me
 | `model_image_entity` | Current model image entity |
 | `model_image` | Static model image fallback |
 | `model_size` | Model image size from `1` to `100` percent; the legacy `small`, `medium` and `large` values remain supported |
+| `model_position` | Vertical model alignment from `0` (top) through `50` (center) to `100` (bottom) |
 | `camera_entity` | Camera entity used for the live view |
 | `default_view` | Set to `camera` to start in camera view |
 | `status_entity` | Printer status |
 | `filename_entity` | Print job or filename |
 | `progress_entity` | Progress from 0 to 100 |
-| `infos` | Up to four entries containing a freely selectable `entity` and `label` |
+| `infos` | Up to four entries containing a freely selectable `entity`, `label` and optional `icon` |
+| `info_layout` | `vertical`, `horizontal` or `text-only` icon placement for information fields |
 | `sections` | Switches `header` and the five content sections on or off |
 | `design` | `normal` or `compact` |
 | `printer_background_color` | Background color behind the printer/model |
@@ -143,9 +147,11 @@ Configure up to four entries under `large_buttons` with:
 - optional `label`, `icon` and `unit`
 - optional `secondary_label` and `secondary_unit`
 
+Set `large_button_layout` to `vertical`, `horizontal` or `text-only`. Icon and label are independent in both normal and compact mode: an empty icon shows no icon, an empty label shows no label, and if both are empty only the entity value remains. Selecting a new entity in the editor initially copies that entity's icon, which can then be changed or cleared.
+
 Without an explicit unit, the entity's `unit_of_measurement` is used. If `secondary_entity` is set, clicking the metric opens that entity's Home Assistant more-info dialog. Existing `metrics.nozzle`, `metrics.bed` and `metrics.fan` configurations from version 0.2.x remain supported.
 
-In normal mode, a configured label replaces the icon; with an empty label only the icon is shown. Compact mode always shows the icon to the left of the large value and keeps the secondary value below.
+The secondary value remains below the main icon/label/value group and continues to open its entity dialog when clicked.
 
 ### Small button bar
 
@@ -159,7 +165,7 @@ The compact design places up to four small action buttons in a centered vertical
 
 Set `design: compact` in YAML or select **Compact** in the editor. The printer area becomes 30% shorter. Up to five filament spools move into a vertically centered translucent overlay on its left side, while the action controls are centered on the right. The configured Multi-Filament background image and color are intentionally ignored in this layout. The large metric buttons use a shorter horizontal icon/value layout. Images continue to use `object-fit: contain`, preserving their aspect ratio.
 
-The model image size is adjustable from 1% to 100%. Existing configurations using `small`, `medium` or `large` are interpreted as 30%, 65% and 100%. The image keeps its aspect ratio with `object-fit: contain`.
+The model image size is adjustable from 1% to 100%. Existing configurations using `small`, `medium` or `large` are interpreted as 30%, 65% and 100%. A separate position slider aligns the complete image box between the top and bottom edges, with 50% centered. The image keeps its aspect ratio with `object-fit: contain`.
 
 Numeric entity values are formatted through Home Assistant itself. This means the card follows the display precision configured in the entity settings, including locale-specific decimal separators.
 
@@ -169,6 +175,6 @@ Unconfigured sections and buttons are hidden. Missing, `unknown` and `unavailabl
 
 ## Version
 
-Current build: **0.6.0**
+Current build: **0.7.0**
 
 This card has been tested with [hass-anycubic](https://github.com/Nino6689/hass-anycubic) by [@Nino6689](https://github.com/Nino6689), but is designed to work with any integration that exposes suitable Home Assistant entities.
