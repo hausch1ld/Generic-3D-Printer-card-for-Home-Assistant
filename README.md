@@ -1,4 +1,4 @@
-# Generic 3D Printer Card for Home Assistant
+# Universal 3D Printer Card for Home Assistant
 
 A configurable Lovelace dashboard card for 3D printers. It combines a printer view with a model overlay, switchable live camera, multi-filament display, print progress, freely selected information, metrics and printer controls.
 
