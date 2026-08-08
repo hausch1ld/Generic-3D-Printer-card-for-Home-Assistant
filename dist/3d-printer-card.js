@@ -90,7 +90,10 @@ class ThreeDPrinterCard extends HTMLElement {
   }
 
   _infos() {
-    if (Array.isArray(this._config?.infos)) return this._config.infos.slice(0, 4);
+    if (Array.isArray(this._config?.infos)) return this._config.infos.slice(0, 4).map((info) => ({
+      label: info.label,
+      entity: info.entity
+    }));
     const c = this._config || {};
     const labels = c.detail_labels || {};
     const infos = [];
@@ -503,12 +506,13 @@ class ThreeDPrinterCardEditor extends HTMLElement {
     if (!Array.isArray(this._config.infos)) {
       const labels = this._config.detail_labels || {};
       const infos = [];
-      if (this._config.layer_current_entity || this._config.layer_total_entity) infos.push({ label: labels.layer || "Layer", entity: this._config.layer_current_entity, secondary_entity: this._config.layer_total_entity, separator: " / " });
-      if (this._config.elapsed_time_entity) infos.push({ label: labels.elapsed || "Elapsed", entity: this._config.elapsed_time_entity, format: "time" });
-      if (this._config.remaining_time_entity) infos.push({ label: labels.remaining || "Remaining", entity: this._config.remaining_time_entity, format: "time" });
-      if (this._config.estimated_end_entity || this._config.total_time_entity) infos.push({ label: labels.estimated_end || "Estimated end", entity: this._config.estimated_end_entity || this._config.total_time_entity, format: "end" });
+      if (this._config.layer_current_entity) infos.push({ label: labels.layer || "Layer", entity: this._config.layer_current_entity });
+      if (this._config.elapsed_time_entity) infos.push({ label: labels.elapsed || "Elapsed", entity: this._config.elapsed_time_entity });
+      if (this._config.remaining_time_entity) infos.push({ label: labels.remaining || "Remaining", entity: this._config.remaining_time_entity });
+      if (this._config.estimated_end_entity || this._config.total_time_entity) infos.push({ label: labels.estimated_end || "Estimated end", entity: this._config.estimated_end_entity || this._config.total_time_entity });
       if (infos.length) this._config.infos = infos.slice(0, 4);
     }
+    if (Array.isArray(this._config.infos)) this._config.infos = this._config.infos.slice(0, 4).map((info) => ({ label: info.label, entity: info.entity }));
     this._render();
   }
 
