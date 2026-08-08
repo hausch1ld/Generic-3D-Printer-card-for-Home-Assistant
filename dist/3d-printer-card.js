@@ -2,7 +2,30 @@
  * Dependency-free Web Component
  */
 
-const CARD_VERSION = "0.3.0";
+const CARD_VERSION = "0.4.0";
+
+const TRANSLATIONS = {
+  en: {
+    general: "General", title: "Title", subtitle: "Subtitle", design: "Design", normal: "Normal", compact: "Compact", status_entity: "Status entity",
+    multi_filament: "Multi-filament system", title_alignment: "Title alignment", left: "Left", center: "Center", right: "Right", background_image: "Background image path", background_color: "Background color",
+    upload_image: "Upload or choose image", spool: "Spool", remove_spool: "Remove spool", label: "Label", spool_entity: "Spool entity", static_spool_image: "Static spool image path", add_spool: "Add spool",
+    printer: "3D printer", printer_image: "Printer image path", model_entity: "Model image entity", model_image: "Static model image path", camera: "Camera", height: "Height in pixels", compact_height_hint: "Compact mode automatically reduces this height by 30%.",
+    progress: "Progress bar and information", filename: "Filename", progress_entity: "Progress", info: "Info", info_entity: "Entity", add_info: "Add info", remove_info: "Remove info",
+    large_bar: "Large button bar", large_hint: "Up to four buttons. The large value is a sensor; the second entity is shown below and opens on click.", large_button: "Large button", remove_button: "Remove button", icon: "Icon", main_value: "Large value (sensor)", main_unit: "Large value unit", secondary_entity: "Small / clickable entity", secondary_label: "Small value label", secondary_unit: "Small value unit", add_button: "Add button",
+    small_bar: "Small button bar", small_hint: "Button entities are pressed; switches and lights are toggled. Compact mode places them vertically over the printer image.", small_button: "Small button", action_entity: "Button, switch or light",
+    target: "Target", configure_printer: "Configure printer image", toggle_camera: "Toggle printer and camera view", are_you_sure: "Are you sure?"
+  },
+  de: {
+    general: "Allgemein", title: "Titel", subtitle: "Untertitel", design: "Design", normal: "Normal", compact: "Kompakt", status_entity: "Status-Entität",
+    multi_filament: "Multi-Filament-System", title_alignment: "Titelausrichtung", left: "Links", center: "Zentriert", right: "Rechts", background_image: "Pfad zum Hintergrundbild", background_color: "Hintergrundfarbe",
+    upload_image: "Bild hochladen oder auswählen", spool: "Spule", remove_spool: "Spule entfernen", label: "Label", spool_entity: "Spulen-Entität", static_spool_image: "Pfad zum statischen Spulenbild", add_spool: "Spule hinzufügen",
+    printer: "3D-Drucker", printer_image: "Pfad zum Druckerbild", model_entity: "Model-Entität", model_image: "Pfad zum statischen Modellbild", camera: "Kamera", height: "Höhe in Pixeln", compact_height_hint: "Im Kompaktmodus wird diese Höhe automatisch um 30 % reduziert.",
+    progress: "Fortschrittsbalken und Infos", filename: "Dateiname", progress_entity: "Fortschritt", info: "Info", info_entity: "Entität", add_info: "Info hinzufügen", remove_info: "Info entfernen",
+    large_bar: "Große Buttonleiste", large_hint: "Bis zu vier Buttons. Der große Wert ist ein Sensor; die zweite Entität wird klein angezeigt und öffnet sich beim Anklicken.", large_button: "Großer Button", remove_button: "Button entfernen", icon: "Icon", main_value: "Großer Wert (Sensor)", main_unit: "Einheit großer Wert", secondary_entity: "Kleine / anklickbare Entität", secondary_label: "Label kleiner Wert", secondary_unit: "Einheit kleiner Wert", add_button: "Button hinzufügen",
+    small_bar: "Kleine Buttonleiste", small_hint: "Button-Entitäten werden gedrückt, Switches und Lights umgeschaltet. Im Kompaktmodus stehen sie vertikal über dem Druckerbild.", small_button: "Kleiner Button", action_entity: "Button, Switch oder Light",
+    target: "Ziel", configure_printer: "Druckerbild konfigurieren", toggle_camera: "Zwischen Drucker und Kamera wechseln", are_you_sure: "Bist du sicher?"
+  }
+};
 
 class ThreeDPrinterCard extends HTMLElement {
   static getConfigElement() {
@@ -14,7 +37,7 @@ class ThreeDPrinterCard extends HTMLElement {
       name: "3D Printer",
       design: "normal",
       sections: { multi_filament: true, printer: true, progress: true, large_buttons: true, small_buttons: true },
-      ace: { label: "ACE / AMS", title_alignment: "left", spools: [] },
+      ace: { label: "", title_alignment: "left", spools: [] },
       large_buttons: [],
       small_buttons: []
     };
@@ -44,6 +67,11 @@ class ThreeDPrinterCard extends HTMLElement {
     return 8;
   }
 
+  _t(key) {
+    const language = (this._hass?.locale?.language || "en").toLowerCase().split("-")[0];
+    return (TRANSLATIONS[language] || TRANSLATIONS.en)[key] || TRANSLATIONS.en[key] || key;
+  }
+
   _section(name) {
     return this._config?.sections?.[name] !== false;
   }
@@ -58,6 +86,31 @@ class ThreeDPrinterCard extends HTMLElement {
     if (Array.isArray(this._config?.small_buttons)) return this._config.small_buttons;
     const defaults = { pause: ["Pause", "mdi:pause"], resume: ["Resume", "mdi:play"], stop: ["Stop", "mdi:stop"], light: ["Light", "mdi:lightbulb"] };
     return Object.entries(this._config?.actions || {}).map(([key, value]) => ({ ...value, _legacyKey: key, label: value.label || defaults[key]?.[0], icon: value.icon || defaults[key]?.[1] }));
+  }
+
+  _infos() {
+    if (Array.isArray(this._config?.infos)) return this._config.infos.slice(0, 4);
+    const c = this._config || {};
+    const labels = c.detail_labels || {};
+    const infos = [];
+    if (c.layer_current_entity || c.layer_total_entity) infos.push({
+      label: labels.layer || (this._hass?.locale?.language?.toLowerCase().startsWith("de") ? "Schicht" : "Layer"),
+      entity: c.layer_current_entity,
+      secondary_entity: c.layer_total_entity,
+      separator: " / "
+    });
+    if (c.elapsed_time_entity) infos.push({ label: labels.elapsed || (this._hass?.locale?.language?.toLowerCase().startsWith("de") ? "Vergangen" : "Elapsed"), entity: c.elapsed_time_entity, format: "time" });
+    if (c.remaining_time_entity) infos.push({ label: labels.remaining || (this._hass?.locale?.language?.toLowerCase().startsWith("de") ? "Verbleibend" : "Remaining"), entity: c.remaining_time_entity, format: "time" });
+    if (c.estimated_end_entity || c.total_time_entity) infos.push({ label: labels.estimated_end || (this._hass?.locale?.language?.toLowerCase().startsWith("de") ? "Ende" : "Estimated end"), entity: c.estimated_end_entity || c.total_time_entity, format: "end" });
+    return infos.slice(0, 4);
+  }
+
+  _infoValue(info) {
+    if (info.format === "time") return this._displayTime(info.entity);
+    if (info.format === "end") return this._displayEnd(info.entity);
+    const primary = this._value(info.entity);
+    if (!info.secondary_entity) return this._escape(primary);
+    return `${this._escape(primary)}${this._escape(info.separator || " / ")}${this._escape(this._value(info.secondary_entity))}`;
   }
 
   connectedCallback() {
@@ -128,23 +181,26 @@ class ThreeDPrinterCard extends HTMLElement {
     const value = this._format(cfg.entity, cfg.unit);
     const secondaryEntity = cfg.secondary_entity || cfg.target_entity;
     const target = secondaryEntity ? this._format(secondaryEntity, cfg.secondary_unit ?? cfg.target_unit ?? cfg.unit) : "";
-    return `<button type="button" class="metric ${this._state(cfg.entity) ? "" : "missing"}" data-metric="${index}" ${secondaryEntity ? `data-target-entity="${this._escape(secondaryEntity)}"` : ""}>
-      <div class="metric-head"><ha-icon icon="${this._escape(cfg.icon || "mdi:gauge")}"></ha-icon><span>${this._escape(cfg.label || this._state(cfg.entity)?.attributes?.friendly_name || `Button ${index + 1}`)}</span></div>
-      <div class="metric-value">${value}</div>
-      ${target ? `<div class="target">${this._escape(cfg.secondary_label || cfg.target_label || "Target")} ${target}</div>` : '<div class="target">&nbsp;</div>'}
+    const label = String(cfg.label || "").trim();
+    const icon = cfg.icon || this._state(cfg.entity)?.attributes?.icon || "mdi:gauge";
+    return `<button type="button" class="metric ${label ? "has-label" : ""} ${this._state(cfg.entity) ? "" : "missing"}" data-metric="${index}" ${secondaryEntity ? `data-target-entity="${this._escape(secondaryEntity)}"` : ""}>
+      <div class="metric-main"><div class="metric-head"><ha-icon icon="${this._escape(icon)}"></ha-icon>${label ? `<span>${this._escape(label)}</span>` : ""}</div>
+      <div class="metric-value">${value}</div></div>
+      ${target ? `<div class="target">${this._escape(cfg.secondary_label || cfg.target_label || this._t("target"))} ${target}</div>` : '<div class="target">&nbsp;</div>'}
     </button>`;
   }
 
-  _spools() {
+  _spools(compact = false) {
     const ace = this._config?.ace;
     if (!ace) return "";
     const spools = (ace.spools || []).slice(0, 5);
-    return `<section class="ace" style="--ace-color:${this._escape(ace.background_color || "transparent")};${this._image(ace.image) ? `--ace-image:url('${this._escape(this._image(ace.image))}')` : ""}">
-      <div class="ace-title align-${this._escape(ace.title_alignment || "left")}">${this._escape(ace.label || "ACE / AMS")}</div>
+    const title = String(ace.label || "").trim();
+    return `<section class="ace ${compact ? "ace-compact" : ""}" style="--ace-color:${this._escape(ace.background_color || "transparent")};${this._image(ace.image) ? `--ace-image:url('${this._escape(this._image(ace.image))}')` : ""}">
+      ${!compact && title ? `<div class="ace-title align-${this._escape(ace.title_alignment || "left")}">${this._escape(title)}</div>` : ""}
       <div class="spools" style="--spool-count:${Math.max(1, spools.length)}">${spools.map((spool, index) => {
         const entityId = spool.entity || spool.image_entity;
         const state = this._state(entityId);
-        const image = this._image(entityId || spool.image);
+        const image = this._image(entityId) || this._image(spool.image);
         const sensorLabel = !this._isMissing(state?.state) ? state.state : state?.attributes?.friendly_name;
         const label = spool.label || sensorLabel || `${index + 1}`;
         return `<div class="spool ${image ? "" : "empty"}" data-spool="${index}">${image ? `<img src="${this._escape(image)}" alt="${this._escape(label)}">` : `<span>${index + 1}</span>`}<small>${this._escape(label)}</small></div>`;
@@ -157,7 +213,7 @@ class ThreeDPrinterCard extends HTMLElement {
     const printer = this._image(this._config.printer_image);
     const model = this._image(this._config.model_image_entity) || this._image(this._config.model_image);
     return `<div class="printer-scene" data-view="printer">
-      ${printer ? `<img class="printer-image" src="${this._escape(printer)}" alt="3D printer">` : '<div class="image-placeholder"><ha-icon icon="mdi:printer-3d"></ha-icon><span>Configure printer_image</span></div>'}
+      ${printer ? `<img class="printer-image" src="${this._escape(printer)}" alt="3D printer">` : `<div class="image-placeholder"><ha-icon icon="mdi:printer-3d"></ha-icon><span>${this._escape(this._t("configure_printer"))}</span></div>`}
       ${model ? `<img class="model-image" src="${this._escape(model)}" alt="Print model">` : ""}
     </div>`;
   }
@@ -165,7 +221,7 @@ class ThreeDPrinterCard extends HTMLElement {
   _button(cfg, index) {
     if (!cfg) return "";
     const state = this._state(cfg.entity);
-    const label = cfg.label || state?.attributes?.friendly_name || `Button ${index + 1}`;
+    const label = cfg.label || state?.attributes?.friendly_name || `${this._t("small_button")} ${index + 1}`;
     const icon = cfg.icon || state?.attributes?.icon || "mdi:gesture-tap-button";
     return `<button class="action" data-small-action="${index}" title="${this._escape(label)}">
       <ha-icon icon="${this._escape(icon)}"></ha-icon><span>${this._escape(label)}</span>
@@ -184,9 +240,7 @@ class ThreeDPrinterCard extends HTMLElement {
     const progress = Number.isFinite(progressRaw) ? Math.min(100, Math.max(0, progressRaw)) : 0;
     const name = this._value(c.filename_entity, c.name || "3D Printer");
     const status = this._value(c.status_entity, "");
-    const currentLayer = this._value(c.layer_current_entity);
-    const totalLayer = this._value(c.layer_total_entity);
-    const labels = c.detail_labels || {};
+    const infos = this._infos();
     const largeButtons = this._largeButtons();
     const smallButtons = this._smallButtons();
     const compact = c.design === "compact";
@@ -194,17 +248,12 @@ class ThreeDPrinterCard extends HTMLElement {
     this.shadowRoot.innerHTML = `<style>${ThreeDPrinterCard.styles}</style>
       <ha-card class="${compact ? "compact" : "normal"}" style="--printer-height:${printerHeight}px;--printer-color:${this._escape(c.printer_background_color || "#101113")}">
         <header><div><h2>${this._escape(c.name || "3D Printer")}</h2>${c.subtitle ? `<p>${this._escape(c.subtitle)}</p>` : ""}</div><span class="status" data-status ${status ? "" : "hidden"}>${this._escape(status)}</span></header>
-        ${this._section("multi_filament") ? this._spools() : ""}
-        ${this._section("printer") ? `<div class="visual-wrap"><button class="visual" data-view="${this._showCamera ? "camera" : "printer"}" data-toggle-view aria-label="Toggle printer and camera view">${this._visual()}</button><div class="visual-actions">${compact && this._section("small_buttons") ? smallButtons.map((button, index) => this._button(button, index)).join("") : ""}<button class="view-hint" data-toggle-view type="button" title="Toggle camera"><ha-icon icon="${this._showCamera ? "mdi:printer-3d" : "mdi:cctv"}"></ha-icon></button></div></div>` : ""}
+        ${!compact && this._section("multi_filament") ? this._spools() : ""}
+        ${this._section("printer") ? `<div class="visual-wrap"><button class="visual" data-view="${this._showCamera ? "camera" : "printer"}" data-toggle-view aria-label="${this._escape(this._t("toggle_camera"))}">${this._visual()}</button>${compact && this._section("multi_filament") ? this._spools(true) : ""}<div class="visual-actions">${compact && this._section("small_buttons") ? smallButtons.slice(0, 4).map((button, index) => this._button(button, index)).join("") : ""}<button class="view-hint" data-toggle-view type="button" title="${this._escape(this._t("toggle_camera"))}"><ha-icon icon="${this._showCamera ? "mdi:printer-3d" : "mdi:cctv"}"></ha-icon></button></div></div>` : ""}
         ${this._section("progress") ? `<section class="job">
           <div class="job-line"><strong data-filename>${this._escape(name)}</strong><b data-progress-label>${Math.round(progress)}%</b></div>
           <div class="progress" data-progress role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"><i style="width:${progress}%"></i></div>
-          <div class="details">
-            <div><span>${this._escape(labels.layer || "Layer")}</span><strong data-layers>${this._escape(currentLayer)} / ${this._escape(totalLayer)}</strong></div>
-            <div><span>${this._escape(labels.elapsed || "Elapsed")}</span><strong data-elapsed>${this._displayTime(c.elapsed_time_entity)}</strong></div>
-            <div><span>${this._escape(labels.remaining || "Remaining")}</span><strong data-remaining>${this._displayTime(c.remaining_time_entity)}</strong></div>
-            <div><span>${this._escape(labels.estimated_end || "Voraussichtliches Ende")}</span><strong data-estimated-end>${this._displayEnd(c.estimated_end_entity || c.total_time_entity)}</strong></div>
-          </div>
+          ${infos.length ? `<div class="details" style="--info-count:${infos.length}">${infos.map((info, index) => `<div><span>${this._escape(info.label || this._state(info.entity)?.attributes?.friendly_name || `${this._t("info")} ${index + 1}`)}</span><strong data-info="${index}">${this._infoValue(info)}</strong></div>`).join("")}</div>` : ""}
         </section>` : ""}
         ${this._section("large_buttons") && largeButtons.length ? `<section class="metrics" style="--button-count:${largeButtons.length}">${largeButtons.map((button, index) => this._metric(button, index)).join("")}</section>` : ""}
         ${!compact && this._section("small_buttons") && smallButtons.length ? `<footer style="--button-count:${smallButtons.length}">${smallButtons.map((button, index) => this._button(button, index)).join("")}</footer>` : ""}
@@ -213,7 +262,7 @@ class ThreeDPrinterCard extends HTMLElement {
     const newVisual = this.shadowRoot.querySelector(".visual");
     if (previousVisual && newVisual && previousView === newVisual.dataset.view) newVisual.replaceWith(previousVisual);
     const newAce = this.shadowRoot.querySelector(".ace");
-    if (previousAce && newAce) newAce.replaceWith(previousAce);
+    if (previousAce && newAce && previousAce.classList.contains("ace-compact") === newAce.classList.contains("ace-compact")) newAce.replaceWith(previousAce);
     this._updateMedia();
 
     if (this._showCamera && c.camera_entity && !this.shadowRoot.querySelector(".camera-host ha-camera-stream")) {
@@ -252,14 +301,11 @@ class ThreeDPrinterCard extends HTMLElement {
     if (progressElement) progressElement.setAttribute("aria-valuenow", progress);
     const progressBar = progressElement?.querySelector("i");
     if (progressBar) progressBar.style.width = `${progress}%`;
-    setText("[data-layers]", `${this._value(c.layer_current_entity)} / ${this._value(c.layer_total_entity)}`);
-    setText("[data-elapsed]", this._displayTime(c.elapsed_time_entity));
-    setText("[data-remaining]", this._displayTime(c.remaining_time_entity));
-    setText("[data-estimated-end]", this._displayEnd(c.estimated_end_entity || c.total_time_entity));
+    this._infos().forEach((info, index) => setHtml(`[data-info="${index}"]`, this._infoValue(info)));
     this._largeButtons().forEach((cfg, index) => {
       const secondaryEntity = cfg.secondary_entity || cfg.target_entity;
       setHtml(`[data-metric="${index}"] .metric-value`, this._format(cfg.entity, cfg.unit));
-      const target = secondaryEntity ? `${this._escape(cfg.secondary_label || cfg.target_label || "Target")} ${this._format(secondaryEntity, cfg.secondary_unit ?? cfg.target_unit ?? cfg.unit)}` : "&nbsp;";
+      const target = secondaryEntity ? `${this._escape(cfg.secondary_label || cfg.target_label || this._t("target"))} ${this._format(secondaryEntity, cfg.secondary_unit ?? cfg.target_unit ?? cfg.unit)}` : "&nbsp;";
       setHtml(`[data-metric="${index}"] .target`, target);
       this.shadowRoot.querySelector(`[data-metric="${index}"]`)?.classList.toggle("missing", !this._state(cfg.entity));
     });
@@ -303,7 +349,7 @@ class ThreeDPrinterCard extends HTMLElement {
       if (!slot) return;
       const entityId = spool.entity || spool.image_entity;
       const state = this._state(entityId);
-      const image = this._image(entityId || spool.image);
+      const image = this._image(entityId) || this._image(spool.image);
       const label = spool.label || (!this._isMissing(state?.state) ? state.state : state?.attributes?.friendly_name) || `${index + 1}`;
       const img = slot.querySelector("img");
       if (img && image && img.getAttribute("src") !== image) img.setAttribute("src", image);
@@ -345,8 +391,8 @@ class ThreeDPrinterCard extends HTMLElement {
   async _runAction(config) {
     const action = config.tap_action || config;
     if (action.confirmation) {
-      const text = typeof action.confirmation === "object" ? action.confirmation.text : "Are you sure?";
-      if (!window.confirm(text || "Are you sure?")) return;
+      const text = typeof action.confirmation === "object" ? action.confirmation.text : this._t("are_you_sure");
+      if (!window.confirm(text || this._t("are_you_sure"))) return;
     }
     const type = action.action || (action.service ? "call-service" : "none");
     if (type === "none") return;
@@ -382,7 +428,7 @@ class ThreeDPrinterCard extends HTMLElement {
   static get styles() { return `
     :host { display:block; --accent:var(--primary-color,#03a9f4); color:var(--primary-text-color,#eee); }
     * { box-sizing:border-box; }
-    ha-card { overflow:hidden; padding:18px; background:var(--ha-card-background,var(--card-background-color,#1c1c1e)); }
+    ha-card { overflow:hidden; padding:18px; }
     header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:14px; }
     h2 { font-size:20px; line-height:1.2; margin:0; } header p { color:var(--secondary-text-color); margin:4px 0 0; font-size:13px; }
     .status { background:color-mix(in srgb,var(--accent) 18%,transparent); color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 35%,transparent); border-radius:999px; padding:5px 10px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
@@ -397,15 +443,15 @@ class ThreeDPrinterCard extends HTMLElement {
     .printer-image { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
     .model-image { position:absolute; left:50%; top:56%; width:30%; height:30%; object-fit:contain; transform:translate(-50%,-50%); filter:drop-shadow(0 8px 7px rgba(0,0,0,.5)); }
     .image-placeholder { display:grid; place-content:center; height:100%; gap:8px; color:var(--secondary-text-color); } .image-placeholder ha-icon { width:52px;height:52px;margin:auto; }
-    .visual-actions { position:absolute; right:10px; bottom:10px; left:10px; display:flex; justify-content:flex-end; align-items:center; gap:7px; pointer-events:none; } .visual-actions>*{pointer-events:auto}.view-hint { display:grid; flex:0 0 38px; width:38px; height:38px; padding:0; color:inherit; place-items:center; cursor:pointer; border:1px solid rgba(255,255,255,.12); border-radius:12px; background:rgba(0,0,0,.58); backdrop-filter:blur(8px); }
+    .visual-actions { position:absolute; right:10px; bottom:10px; left:10px; display:flex; justify-content:flex-end; align-items:center; gap:7px; pointer-events:none; } .visual-actions>*{pointer-events:auto}.view-hint { display:grid; flex:0 0 42px; width:42px; height:42px; padding:0; color:inherit; place-items:center; cursor:pointer; border:1px solid rgba(255,255,255,.12); border-radius:12px; background:rgba(0,0,0,.62); backdrop-filter:blur(8px); }
     .job { padding:18px 2px 14px; } .job-line { display:flex; justify-content:space-between; gap:12px; margin-bottom:9px; } .job-line strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .job-line b { color:var(--accent); }
     .progress { height:8px; overflow:hidden; background:rgba(255,255,255,.1); border-radius:999px; } .progress i { display:block; height:100%; background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 65%,white)); border-radius:inherit; transition:width .35s ease; }
-    .details { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; } .details div { min-width:0; } .details span,.target { display:block; color:var(--secondary-text-color); font-size:10px; text-transform:uppercase; } .details strong { display:block; margin-top:3px; font-size:13px; }
+    .details { display:grid; grid-template-columns:repeat(var(--info-count),minmax(0,1fr)); justify-content:center; gap:10px; max-width:calc(var(--info-count) * 25%); margin:14px auto 0; text-align:center; } .details div { min-width:0; } .details span,.target { display:block; overflow:hidden; color:var(--secondary-text-color); font-size:10px; text-overflow:ellipsis; text-transform:uppercase; white-space:nowrap; } .details strong { display:block; margin-top:3px; font-size:13px; }
     .metrics { display:grid; grid-template-columns:repeat(var(--button-count),1fr); gap:8px; padding:14px 0; border-top:1px solid rgba(255,255,255,.08); }
-    .metric { min-width:0; padding:11px; text-align:center; color:inherit; font:inherit; background:rgba(255,255,255,.045); border:1px solid transparent; border-radius:12px; } .metric[data-target-entity] { cursor:pointer; } .metric[data-target-entity]:hover { background:color-mix(in srgb,var(--accent) 12%,rgba(255,255,255,.045)); border-color:color-mix(in srgb,var(--accent) 25%,transparent); } .metric-head { display:flex; align-items:center; justify-content:center; gap:5px; color:var(--secondary-text-color); font-size:11px; } .metric-head ha-icon { width:17px;height:17px; } .metric-value { margin:6px 0 3px; font-size:20px; font-weight:700; } .unit { font-size:.65em;color:var(--secondary-text-color); } .target { text-transform:none; } .missing { opacity:.65; }
+    .metric { min-width:0; padding:11px; text-align:center; color:inherit; font:inherit; background:rgba(127,127,127,.09); border:1px solid transparent; border-radius:12px; } .metric[data-target-entity] { cursor:pointer; } .metric[data-target-entity]:hover { background:color-mix(in srgb,var(--accent) 12%,rgba(127,127,127,.09)); border-color:color-mix(in srgb,var(--accent) 25%,transparent); } .metric-main{display:block}.metric-head { display:flex; min-height:18px; align-items:center; justify-content:center; gap:5px; color:var(--secondary-text-color); font-size:11px; } .normal .metric.has-label .metric-head ha-icon{display:none}.metric-head ha-icon { width:19px;height:19px; } .metric-value { margin:6px 0 3px; font-size:20px; font-weight:700; } .unit { font-size:.65em;color:var(--secondary-text-color); } .target { text-transform:none; } .missing { opacity:.65; }
     footer { display:grid; grid-template-columns:repeat(var(--button-count),1fr); gap:8px; padding-top:3px; } .action { display:flex; min-width:0; min-height:48px; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; color:var(--primary-text-color); background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.06); border-radius:12px; } .action:hover { background:color-mix(in srgb,var(--accent) 16%,rgba(255,255,255,.06)); } .action ha-icon { width:21px;height:21px; } .action span { overflow:hidden; max-width:100%; font-size:10px; text-overflow:ellipsis; }
-    .compact .visual{height:calc(var(--printer-height) * .7)}.compact .ace{min-height:56px;padding:7px 12px 6px}.compact .ace-title{font-size:9px}.compact .spools{margin-top:3px}.compact .spool img,.compact .spool>span{width:30px;height:30px}.compact .spool small{font-size:8px}.compact .visual-actions .action{flex:0 1 62px;min-height:38px;background:rgba(0,0,0,.58);backdrop-filter:blur(8px)}.compact .visual-actions .action ha-icon{width:18px;height:18px}.compact .visual-actions .action span{font-size:8px}
-    @media(max-width:460px){ ha-card{padding:13px}.details{grid-template-columns:repeat(2,1fr)}.spools{gap:5px;grid-template-columns:repeat(var(--spool-count),minmax(0,54px))}.spool img,.spool>span{width:48px;height:48px}.metric{padding:9px 5px}.metric-value{font-size:17px}.metrics{grid-template-columns:repeat(2,1fr)} }
+    .compact .visual{height:calc(var(--printer-height) * .7)}.compact .ace-compact{position:absolute;z-index:2;top:50%;left:10px;width:48px;min-height:0;margin:0;padding:0;overflow:visible;transform:translateY(-50%);background:none;border:0}.compact .ace-compact .spools{display:flex;max-width:none;margin:0;flex-direction:column;gap:6px}.compact .ace-compact .spool{display:grid;width:48px;min-height:40px;padding:3px 2px;place-items:center;border:1px solid rgba(255,255,255,.08);border-radius:10px;background:rgba(0,0,0,.62);backdrop-filter:blur(8px)}.compact .ace-compact .spool img,.compact .ace-compact .spool>span{width:25px;height:25px}.compact .ace-compact .spool small{max-width:43px;margin-top:1px;color:#ddd;font-size:7px}.compact .visual-actions{top:50%;right:10px;bottom:auto;left:auto;flex-direction:column;justify-content:center;gap:6px;transform:translateY(-50%)}.compact .visual-actions .action,.compact .view-hint{flex:0 0 42px;width:42px;min-width:42px;min-height:42px;height:42px;padding:0;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(0,0,0,.62);backdrop-filter:blur(8px)}.compact .visual-actions .action ha-icon,.compact .view-hint ha-icon{width:21px;height:21px}.compact .visual-actions .action span{display:none}.compact .metric{padding:8px 10px}.compact .metric-main{display:flex;align-items:center;justify-content:center;gap:10px}.compact .metric-head span{display:none}.compact .metric-head ha-icon{display:block;width:22px;height:22px}.compact .metric-value{margin:0;font-size:20px}.compact .target{margin-top:4px}
+    @media(max-width:460px){ ha-card{padding:13px}.spools{gap:5px;grid-template-columns:repeat(var(--spool-count),minmax(0,54px))}.normal .spool img,.normal .spool>span{width:48px;height:48px}.metric{padding:9px 5px}.metric-value{font-size:17px}.metrics{grid-template-columns:repeat(2,1fr)} }
   `; }
 }
 
@@ -433,12 +479,23 @@ class ThreeDPrinterCardEditor extends HTMLElement {
         return { label: item.label, icon: item.icon, entity: Array.isArray(targetEntity) ? targetEntity[0] : targetEntity };
       }).filter((item) => item.entity);
     }
+    if (!Array.isArray(this._config.infos)) {
+      const labels = this._config.detail_labels || {};
+      const infos = [];
+      if (this._config.layer_current_entity || this._config.layer_total_entity) infos.push({ label: labels.layer || "Layer", entity: this._config.layer_current_entity, secondary_entity: this._config.layer_total_entity, separator: " / " });
+      if (this._config.elapsed_time_entity) infos.push({ label: labels.elapsed || "Elapsed", entity: this._config.elapsed_time_entity, format: "time" });
+      if (this._config.remaining_time_entity) infos.push({ label: labels.remaining || "Remaining", entity: this._config.remaining_time_entity, format: "time" });
+      if (this._config.estimated_end_entity || this._config.total_time_entity) infos.push({ label: labels.estimated_end || "Estimated end", entity: this._config.estimated_end_entity || this._config.total_time_entity, format: "end" });
+      if (infos.length) this._config.infos = infos.slice(0, 4);
+    }
     this._render();
   }
 
   set hass(hass) {
+    const oldLanguage = this._hass?.locale?.language;
     this._hass = hass;
-    this.shadowRoot?.querySelectorAll("ha-selector").forEach((selector) => { selector.hass = hass; });
+    if (this._config && oldLanguage !== hass?.locale?.language) this._render();
+    else this.shadowRoot?.querySelectorAll("ha-selector").forEach((selector) => { selector.hass = hass; });
   }
 
   connectedCallback() {
@@ -456,6 +513,11 @@ class ThreeDPrinterCardEditor extends HTMLElement {
 
   _escape(value) {
     return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+  }
+
+  _t(key) {
+    const language = (this._hass?.locale?.language || "en").toLowerCase().split("-")[0];
+    return (TRANSLATIONS[language] || TRANSLATIONS.en)[key] || TRANSLATIONS.en[key] || key;
   }
 
   _get(path, fallback = "") {
@@ -491,36 +553,47 @@ class ThreeDPrinterCardEditor extends HTMLElement {
     return `<label class="selector"><span>${label}</span><ha-selector data-path="${this._path(path)}" data-selector="${this._escape(JSON.stringify(selector))}"></ha-selector></label>`;
   }
 
+  _imageField(label, path) {
+    return `<div class="image-field">${this._input(label, path)}${this._selector(this._t("upload_image"), path, { media: { accept: ["image/*"], clearable: true, image_upload: true, hide_content_type: true } }).replace("<ha-selector ", "<ha-selector data-image-selector=\"true\" ")}</div>`;
+  }
+
   _toggle(name, title) {
     const enabled = this._get(["sections", name], true) !== false;
     return `<label class="toggle"><span>${title}</span><input type="checkbox" data-path="${this._path(["sections", name])}" ${enabled ? "checked" : ""}></label>`;
   }
 
   _spoolEditor(spool, index) {
-    return `<div class="item"><div class="item-head"><b>Spule ${index + 1}</b><button type="button" class="remove" data-remove-spool="${index}" title="Spule entfernen"><ha-icon icon="mdi:minus"></ha-icon></button></div><div class="grid">
-      ${this._input("Beschriftung", ["ace", "spools", index, "label"])}
-      ${this._selector("Spulen-Entität", ["ace", "spools", index, "entity"], { entity: {} })}
-      ${this._selector("Statisches Spulenbild / Upload", ["ace", "spools", index, "image"], { image: {} })}
+    return `<div class="item"><div class="item-head"><b>${this._t("spool")} ${index + 1}</b><button type="button" class="remove" data-remove-spool="${index}" title="${this._t("remove_spool")}"><ha-icon icon="mdi:minus"></ha-icon></button></div><div class="grid">
+      ${this._input(this._t("label"), ["ace", "spools", index, "label"])}
+      ${this._selector(this._t("spool_entity"), ["ace", "spools", index, "entity"], { entity: {} })}
+      ${this._imageField(this._t("static_spool_image"), ["ace", "spools", index, "image"])}
     </div></div>`;
   }
 
   _largeButtonEditor(button, index) {
-    return `<div class="item"><div class="item-head"><b>Großer Button ${index + 1}</b><button type="button" class="remove" data-remove-large="${index}" title="Button entfernen"><ha-icon icon="mdi:minus"></ha-icon></button></div><div class="grid">
-      ${this._input("Beschriftung", ["large_buttons", index, "label"])}
-      ${this._selector("Icon", ["large_buttons", index, "icon"], { icon: {} })}
-      ${this._selector("Großer Wert (Sensor)", ["large_buttons", index, "entity"], { entity: { domain: "sensor" } })}
-      ${this._input("Einheit großer Wert", ["large_buttons", index, "unit"])}
-      ${this._selector("Kleine / anklickbare Entität", ["large_buttons", index, "secondary_entity"], { entity: {} })}
-      ${this._input("Beschriftung kleiner Wert", ["large_buttons", index, "secondary_label"])}
-      ${this._input("Einheit kleiner Wert", ["large_buttons", index, "secondary_unit"])}
+    return `<div class="item"><div class="item-head"><b>${this._t("large_button")} ${index + 1}</b><button type="button" class="remove" data-remove-large="${index}" title="${this._t("remove_button")}"><ha-icon icon="mdi:minus"></ha-icon></button></div><div class="grid">
+      ${this._input(this._t("label"), ["large_buttons", index, "label"])}
+      ${this._selector(this._t("icon"), ["large_buttons", index, "icon"], { icon: {} })}
+      ${this._selector(this._t("main_value"), ["large_buttons", index, "entity"], { entity: { domain: "sensor" } })}
+      ${this._input(this._t("main_unit"), ["large_buttons", index, "unit"])}
+      ${this._selector(this._t("secondary_entity"), ["large_buttons", index, "secondary_entity"], { entity: {} })}
+      ${this._input(this._t("secondary_label"), ["large_buttons", index, "secondary_label"])}
+      ${this._input(this._t("secondary_unit"), ["large_buttons", index, "secondary_unit"])}
     </div></div>`;
   }
 
   _smallButtonEditor(button, index) {
-    return `<div class="item"><div class="item-head"><b>Kleiner Button ${index + 1}</b><button type="button" class="remove" data-remove-small="${index}" title="Button entfernen"><ha-icon icon="mdi:minus"></ha-icon></button></div><div class="grid">
-      ${this._input("Beschriftung", ["small_buttons", index, "label"])}
-      ${this._selector("Icon", ["small_buttons", index, "icon"], { icon: {} })}
-      ${this._selector("Button, Switch oder Light", ["small_buttons", index, "entity"], { entity: { domain: ["button", "switch", "light"] } })}
+    return `<div class="item"><div class="item-head"><b>${this._t("small_button")} ${index + 1}</b><button type="button" class="remove" data-remove-small="${index}" title="${this._t("remove_button")}"><ha-icon icon="mdi:minus"></ha-icon></button></div><div class="grid">
+      ${this._input(this._t("label"), ["small_buttons", index, "label"])}
+      ${this._selector(this._t("icon"), ["small_buttons", index, "icon"], { icon: {} })}
+      ${this._selector(this._t("action_entity"), ["small_buttons", index, "entity"], { entity: { domain: ["button", "switch", "light"] } })}
+    </div></div>`;
+  }
+
+  _infoEditor(info, index) {
+    return `<div class="item"><div class="item-head"><b>${this._t("info")} ${index + 1}</b><button type="button" class="remove" data-remove-info="${index}" title="${this._t("remove_info")}"><ha-icon icon="mdi:minus"></ha-icon></button></div><div class="grid">
+      ${this._input(this._t("label"), ["infos", index, "label"])}
+      ${this._selector(this._t("info_entity"), ["infos", index, "entity"], { entity: {} })}
     </div></div>`;
   }
 
@@ -528,23 +601,24 @@ class ThreeDPrinterCardEditor extends HTMLElement {
     if (!this.shadowRoot || !this._config) return;
     const ace = this._config.ace || {};
     const spools = (ace.spools || []).slice(0, 5);
+    const infos = Array.isArray(this._config.infos) ? this._config.infos.slice(0, 4) : [];
     const largeButtons = Array.isArray(this._config.large_buttons) ? this._config.large_buttons.slice(0, 4) : [];
     const smallButtons = Array.isArray(this._config.small_buttons) ? this._config.small_buttons : [];
     this.shadowRoot.innerHTML = `<style>
-      :host{display:block;color:var(--primary-text-color);font-family:var(--paper-font-body1_-_font-family,inherit)}*{box-sizing:border-box}.editor{display:grid;gap:12px;padding:4px 0 16px}.panel{padding:12px;border:1px solid var(--divider-color);border-radius:12px;background:var(--card-background-color)}.panel>h3{margin:0 0 12px;font-size:16px}.toggle{display:flex;align-items:center;justify-content:space-between;font-weight:700}.toggle input{width:20px;height:20px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}label:not(.toggle){display:grid;align-content:start;gap:6px;min-width:0}label>span{color:var(--secondary-text-color);font-size:12px}input,select{width:100%;min-height:42px;padding:8px 10px;color:var(--primary-text-color);background:transparent;border:1px solid var(--divider-color);border-radius:8px;font:inherit}.item{margin-top:12px;padding:10px;border:1px solid var(--divider-color);border-radius:10px}.item-head{display:flex;align-items:center;justify-content:space-between}.remove,.add{display:inline-grid;place-items:center;min-width:36px;height:36px;padding:0 10px;color:var(--primary-text-color);cursor:pointer;background:var(--secondary-background-color);border:0;border-radius:8px}.add{display:flex;gap:6px;margin-top:12px}.remove ha-icon,.add ha-icon{width:20px;height:20px}.hint{margin:8px 0 0;color:var(--secondary-text-color);font-size:12px;line-height:1.4}@media(max-width:600px){.grid{grid-template-columns:1fr}}
+      :host{display:block;max-width:100%;container-type:inline-size;color:var(--primary-text-color);font-family:var(--paper-font-body1_-_font-family,inherit)}*{box-sizing:border-box;min-width:0}.editor{display:grid;max-width:100%;gap:12px;padding:4px 0 16px;overflow:hidden}.panel{max-width:100%;padding:12px;border:1px solid var(--divider-color);border-radius:12px;background:var(--card-background-color)}.panel>h3{margin:0 0 12px;font-size:16px}.toggle{display:flex;align-items:center;justify-content:space-between;font-weight:700}.toggle input{width:20px;height:20px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}label:not(.toggle),.selector,.image-field{display:grid;max-width:100%;align-content:start;gap:6px;min-width:0}label>span{overflow:hidden;color:var(--secondary-text-color);font-size:12px;text-overflow:ellipsis;white-space:nowrap}ha-selector{display:block;width:100%;max-width:100%;min-width:0;overflow:hidden}input,select{width:100%;max-width:100%;min-height:42px;padding:8px 10px;color:var(--primary-text-color);background:transparent;border:1px solid var(--divider-color);border-radius:8px;font:inherit}.image-field{grid-column:1/-1;padding:8px;border:1px solid var(--divider-color);border-radius:8px}.item{max-width:100%;margin-top:12px;padding:10px;overflow:hidden;border:1px solid var(--divider-color);border-radius:10px}.item-head{display:flex;align-items:center;justify-content:space-between}.remove,.add{display:inline-grid;place-items:center;min-width:36px;height:36px;padding:0 10px;color:var(--primary-text-color);cursor:pointer;background:var(--secondary-background-color);border:0;border-radius:8px}.add{display:flex;gap:6px;margin-top:12px}.remove ha-icon,.add ha-icon{width:20px;height:20px}.hint{margin:8px 0 0;color:var(--secondary-text-color);font-size:12px;line-height:1.4}@container(max-width:560px){.grid{grid-template-columns:1fr}}@media(max-width:700px){.grid{grid-template-columns:1fr}}
     </style><div class="editor">
-      <section class="panel"><h3>Allgemein</h3><div class="grid">${this._input("Titel", ["name"])}${this._input("Untertitel", ["subtitle"])}<label><span>Design</span><select data-path="${this._path(["design"])}"><option value="normal" ${this._get(["design"], "normal") === "normal" ? "selected" : ""}>Normal</option><option value="compact" ${this._get(["design"]) === "compact" ? "selected" : ""}>Kompakt</option></select></label>${this._selector("Status-Entität", ["status_entity"], { entity: {} })}</div></section>
-      <section class="panel">${this._toggle("multi_filament", "Multi-Filament-System")}<div class="grid">${this._input("Titel", ["ace", "label"])}<label><span>Titelausrichtung</span><select data-path="${this._path(["ace", "title_alignment"])}"><option value="left" ${ace.title_alignment !== "center" && ace.title_alignment !== "right" ? "selected" : ""}>Links</option><option value="center" ${ace.title_alignment === "center" ? "selected" : ""}>Zentriert</option><option value="right" ${ace.title_alignment === "right" ? "selected" : ""}>Rechts</option></select></label>${this._selector("Hintergrundbild / Upload", ["ace", "image"], { image: {} })}${this._input("Hintergrundfarbe", ["ace", "background_color"], "color")}</div>${spools.map((spool, index) => this._spoolEditor(spool, index)).join("")}${spools.length < 5 ? '<button type="button" class="add" data-add-spool><ha-icon icon="mdi:plus"></ha-icon>Spule hinzufügen</button>' : ""}</section>
-      <section class="panel">${this._toggle("printer", "3D-Drucker")}<div class="grid">${this._selector("Druckerbild / Upload", ["printer_image"], { image: {} })}${this._input("Hintergrundfarbe", ["printer_background_color"], "color")}${this._selector("Model-Entität", ["model_image_entity"], { entity: { domain: "image" } })}${this._selector("Statisches Modelbild / Upload", ["model_image"], { image: {} })}${this._selector("Kamera", ["camera_entity"], { entity: { domain: "camera" } })}${this._input("Höhe in Pixeln", ["printer_height"], "number", 'min="160" max="900" step="10"')}</div><p class="hint">Im Kompaktmodus wird die eingestellte Höhe automatisch um 30 % reduziert.</p></section>
-      <section class="panel">${this._toggle("progress", "Fortschrittsbalken und Infos")}<div class="grid">${this._selector("Dateiname", ["filename_entity"], { entity: {} })}${this._selector("Fortschritt", ["progress_entity"], { entity: {} })}${this._selector("Aktuelle Schicht", ["layer_current_entity"], { entity: {} })}${this._selector("Gesamte Schichten", ["layer_total_entity"], { entity: {} })}${this._selector("Vergangene Zeit", ["elapsed_time_entity"], { entity: {} })}${this._selector("Verbleibende Zeit", ["remaining_time_entity"], { entity: {} })}${this._selector("Voraussichtliches Ende", ["estimated_end_entity"], { entity: {} })}${this._input("Label Schicht", ["detail_labels", "layer"])}${this._input("Label vergangen", ["detail_labels", "elapsed"])}${this._input("Label verbleibend", ["detail_labels", "remaining"])}${this._input("Label Ende", ["detail_labels", "estimated_end"])}</div></section>
-      <section class="panel">${this._toggle("large_buttons", "Große Buttonleiste")}<p class="hint">Bis zu vier Buttons. Der große Wert ist ein Sensor; die zweite Entität wird klein angezeigt und öffnet sich beim Anklicken.</p>${largeButtons.map((button, index) => this._largeButtonEditor(button, index)).join("")}${largeButtons.length < 4 ? '<button type="button" class="add" data-add-large><ha-icon icon="mdi:plus"></ha-icon>Button hinzufügen</button>' : ""}</section>
-      <section class="panel">${this._toggle("small_buttons", "Kleine Buttonleiste")}<p class="hint">Button-Entitäten werden gedrückt, Switches und Lights umgeschaltet. Im Kompaktmodus liegt diese Leiste über dem Druckerbild.</p>${smallButtons.map((button, index) => this._smallButtonEditor(button, index)).join("")}<button type="button" class="add" data-add-small><ha-icon icon="mdi:plus"></ha-icon>Button hinzufügen</button></section>
+      <section class="panel"><h3>${this._t("general")}</h3><div class="grid">${this._input(this._t("title"), ["name"])}${this._input(this._t("subtitle"), ["subtitle"])}<label><span>${this._t("design")}</span><select data-path="${this._path(["design"])}"><option value="normal" ${this._get(["design"], "normal") === "normal" ? "selected" : ""}>${this._t("normal")}</option><option value="compact" ${this._get(["design"]) === "compact" ? "selected" : ""}>${this._t("compact")}</option></select></label>${this._selector(this._t("status_entity"), ["status_entity"], { entity: {} })}</div></section>
+      <section class="panel">${this._toggle("multi_filament", this._t("multi_filament"))}<div class="grid">${this._input(this._t("title"), ["ace", "label"])}<label><span>${this._t("title_alignment")}</span><select data-path="${this._path(["ace", "title_alignment"])}"><option value="left" ${ace.title_alignment !== "center" && ace.title_alignment !== "right" ? "selected" : ""}>${this._t("left")}</option><option value="center" ${ace.title_alignment === "center" ? "selected" : ""}>${this._t("center")}</option><option value="right" ${ace.title_alignment === "right" ? "selected" : ""}>${this._t("right")}</option></select></label>${this._imageField(this._t("background_image"), ["ace", "image"])}${this._input(this._t("background_color"), ["ace", "background_color"], "color")}</div>${spools.map((spool, index) => this._spoolEditor(spool, index)).join("")}${spools.length < 5 ? `<button type="button" class="add" data-add-spool><ha-icon icon="mdi:plus"></ha-icon>${this._t("add_spool")}</button>` : ""}</section>
+      <section class="panel">${this._toggle("printer", this._t("printer"))}<div class="grid">${this._imageField(this._t("printer_image"), ["printer_image"])}${this._input(this._t("background_color"), ["printer_background_color"], "color")}${this._selector(this._t("model_entity"), ["model_image_entity"], { entity: { domain: "image" } })}${this._imageField(this._t("model_image"), ["model_image"])}${this._selector(this._t("camera"), ["camera_entity"], { entity: { domain: "camera" } })}${this._input(this._t("height"), ["printer_height"], "number", 'min="160" max="900" step="10"')}</div><p class="hint">${this._t("compact_height_hint")}</p></section>
+      <section class="panel">${this._toggle("progress", this._t("progress"))}<div class="grid">${this._selector(this._t("filename"), ["filename_entity"], { entity: {} })}${this._selector(this._t("progress_entity"), ["progress_entity"], { entity: {} })}</div>${infos.map((info, index) => this._infoEditor(info, index)).join("")}${infos.length < 4 ? `<button type="button" class="add" data-add-info><ha-icon icon="mdi:plus"></ha-icon>${this._t("add_info")}</button>` : ""}</section>
+      <section class="panel">${this._toggle("large_buttons", this._t("large_bar"))}<p class="hint">${this._t("large_hint")}</p>${largeButtons.map((button, index) => this._largeButtonEditor(button, index)).join("")}${largeButtons.length < 4 ? `<button type="button" class="add" data-add-large><ha-icon icon="mdi:plus"></ha-icon>${this._t("add_button")}</button>` : ""}</section>
+      <section class="panel">${this._toggle("small_buttons", this._t("small_bar"))}<p class="hint">${this._t("small_hint")}</p>${smallButtons.map((button, index) => this._smallButtonEditor(button, index)).join("")}<button type="button" class="add" data-add-small><ha-icon icon="mdi:plus"></ha-icon>${this._t("add_button")}</button></section>
     </div>`;
     this.shadowRoot.querySelectorAll("ha-selector").forEach((element) => {
       const path = JSON.parse(element.dataset.path);
       element.hass = this._hass;
       element.selector = JSON.parse(element.dataset.selector);
-      element.value = this._get(path, undefined);
+      element.value = element.hasAttribute("data-image-selector") ? undefined : this._get(path, undefined);
     });
   }
 
@@ -560,7 +634,18 @@ class ThreeDPrinterCardEditor extends HTMLElement {
     const field = event.target.closest("ha-selector[data-path]");
     if (!field) return;
     event.stopPropagation();
-    this._set(JSON.parse(field.dataset.path), event.detail?.value);
+    const path = JSON.parse(field.dataset.path);
+    if (field.hasAttribute("data-image-selector")) {
+      const value = event.detail?.value;
+      const mediaId = value?.media_content_id || "";
+      let imagePath = value?.metadata?.thumbnail || mediaId;
+      const uploadPrefix = "media-source://image_upload/";
+      if (mediaId.startsWith(uploadPrefix)) imagePath = `/api/image/serve/${mediaId.slice(uploadPrefix.length)}/original`;
+      this._set(path, imagePath);
+      this._render();
+      return;
+    }
+    this._set(path, event.detail?.value);
   }
 
   _handleClick(event) {
@@ -570,6 +655,8 @@ class ThreeDPrinterCardEditor extends HTMLElement {
     if (action.hasAttribute("data-add-spool")) {
       next.ace ||= {}; next.ace.spools ||= []; if (next.ace.spools.length < 5) next.ace.spools.push({});
     } else if (action.dataset.removeSpool !== undefined) next.ace.spools.splice(Number(action.dataset.removeSpool), 1);
+    else if (action.hasAttribute("data-add-info")) { next.infos ||= []; if (next.infos.length < 4) next.infos.push({}); }
+    else if (action.dataset.removeInfo !== undefined) next.infos.splice(Number(action.dataset.removeInfo), 1);
     else if (action.hasAttribute("data-add-large")) { next.large_buttons ||= []; if (next.large_buttons.length < 4) next.large_buttons.push({ icon: "mdi:gauge" }); }
     else if (action.dataset.removeLarge !== undefined) next.large_buttons.splice(Number(action.dataset.removeLarge), 1);
     else if (action.hasAttribute("data-add-small")) { next.small_buttons ||= []; next.small_buttons.push({ icon: "mdi:gesture-tap-button" }); }
