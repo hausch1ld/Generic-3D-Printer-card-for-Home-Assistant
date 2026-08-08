@@ -13,12 +13,16 @@ The card does not hardcode Anycubic or other manufacturer-specific entity names.
 
 - Full-width printer image with a dynamic model-image overlay
 - Tap the printer area to switch between printer and live-camera views
-- ACE/AMS area with up to four freely configurable spool images
+- Visual dashboard editor; YAML is optional
+- Five independently switchable sections
+- ACE/AMS area with up to five automatically centered spool images
 - Filename, progress, layers, elapsed time, remaining time and estimated end
-- Nozzle, bed and fan fields with optional target entities and units
+- Up to four large metric buttons with a sensor value and a clickable secondary entity
 - Clickable metric fields that open the target entity's Home Assistant dialog
-- Configurable Pause, Resume, Stop and Light actions
-- Optional confirmation before stopping a print
+- Small action buttons for `button`, `switch` and `light` entities
+- Per-button labels and icon overrides
+- Normal and compact layouts
+- Home Assistant image selector with image upload support
 - Stable display for missing, `unknown` and `unavailable` entities
 - Responsive, dark Home Assistant-compatible design
 
@@ -36,7 +40,7 @@ This repository can be installed as a HACS custom repository:
 HACS should add the JavaScript resource automatically. If it does not, open **Settings → Dashboards → Resources** and add:
 
 ```text
-/hacsfiles/Generic-3D-Printer-card-for-Home-Assistant-/3d-printer-card.js
+/hacsfiles/Generic-3D-Printer-card-for-Home-Assistant/3d-printer-card.js
 ```
 
 Select **JavaScript module** as the resource type.
@@ -69,6 +73,16 @@ remaining_time_entity: sensor.printer_remaining_time
 estimated_end_entity: sensor.printer_estimated_end
 ```
 
+After adding the card, use Home Assistant's regular dashboard editor to configure it. The editor is split into five switchable sections:
+
+1. **Multi-Filament System**
+2. **3D Printer**
+3. **Progress bar and information**
+4. **Large button bar**
+5. **Small button bar**
+
+The image controls use Home Assistant's native image selector, so you can select an existing image, enter a supported path or upload a new image. The full configuration remains available in YAML for advanced use.
+
 > The Lovelace type is `custom:three-d-printer-card`. Web Component names cannot begin with a number, so `custom:3d-printer-card` is not valid. The JavaScript filename remains `3d-printer-card.js`.
 
 See [`example.yaml`](example.yaml) for a complete configuration with ACE/AMS, metrics and actions.
@@ -91,41 +105,46 @@ See [`example.yaml`](example.yaml) for a complete configuration with ACE/AMS, me
 | `elapsed_time_entity`, `remaining_time_entity` | Numeric seconds or an already formatted sensor value |
 | `estimated_end_entity` | Estimated end; timestamps are formatted locally |
 | `detail_labels` | Custom labels for `layer`, `elapsed`, `remaining` and `estimated_end` |
+| `sections` | Switches the five editor/card sections on or off |
+| `design` | `normal` or `compact` |
+| `printer_background_color` | Background color behind the printer/model |
+| `printer_height` | Printer area height in pixels; compact mode displays it 30% shorter |
 
 Tapping the printer/model area switches to the live camera and back. Without `camera_entity`, the view remains unchanged.
 
 ### ACE/AMS and images
 
-`ace.spools` supports up to four entries. Set `entity` to a sensor whose state is the filament label and whose `entity_picture` attribute contains the spool image. An explicit `label` overrides the state. The older `image_entity` option remains supported. `ace.image` optionally adds an ACE/AMS background image.
+`ace.spools` supports up to five entries. Spools are centered automatically and remain symmetrical for every item count. Set `entity` to a sensor whose state is the filament label and whose `entity_picture` attribute contains the spool image. An explicit `label` overrides the state. The older `image_entity` option remains supported. A static `image` can also be selected or uploaded for each spool.
+
+`ace.image` adds an optional background image, while `ace.background_color` defines a plain fallback/background color. Use `ace.title_alignment` with `left`, `center` or `right` to align the section title. Compact mode reduces this section to half of its normal height and scales its contents proportionally.
 
 Transparent model images work best for the model overlay. Printer and ACE images are not bundled, so you can use assets matching your own hardware.
 
-### Metrics
+### Large button bar
 
-Configure `metrics.nozzle`, `metrics.bed` and `metrics.fan` with:
+Configure up to four entries under `large_buttons` with:
 
-- `entity`
-- optional `target_entity`
+- `entity`: the main sensor shown as the large value
+- optional `secondary_entity`: any entity shown below and opened on click
 - optional `label`, `icon` and `unit`
-- optional `target_label` and `target_unit`
+- optional `secondary_label` and `secondary_unit`
 
-Without an explicit unit, the entity's `unit_of_measurement` is used. If `target_entity` is set, clicking the metric opens that entity's Home Assistant more-info dialog.
+Without an explicit unit, the entity's `unit_of_measurement` is used. If `secondary_entity` is set, clicking the metric opens that entity's Home Assistant more-info dialog. Existing `metrics.nozzle`, `metrics.bed` and `metrics.fan` configurations from version 0.2.x remain supported.
 
-### Actions
+### Small button bar
 
-Under `actions.pause`, `resume`, `stop` and `light`, configure `label`, `icon` and `tap_action`. Supported action types are `perform-action`, `call-service`, `toggle`, `more-info`, `navigate`, `url` and `none`.
+Each entry under `small_buttons` accepts a `button`, `switch` or `light` entity plus optional `label` and `icon`. A `button` entity is pressed; a `switch` or `light` entity is toggled. A configured icon overrides the entity's icon.
 
-Add a confirmation to safety-critical actions:
+The compact design moves this entire bar onto the lower edge of the printer image next to the camera toggle. Existing `actions` configurations from version 0.2.x remain operational for backward compatibility.
 
-```yaml
-confirmation:
-  text: Really stop the print?
-```
+### Compact design
+
+Set `design: compact` in YAML or select **Compact** in the editor. The printer area becomes 30% shorter, the Multi-Filament section becomes roughly half as high, and the small button bar moves onto the printer image. Images continue to use `object-fit: contain`, preserving their aspect ratio.
 
 Unconfigured sections and buttons are hidden. Missing, `unknown` and `unavailable` values display as `—`.
 
 ## Version
 
-Current build: **0.2.2**
+Current build: **0.3.0**
 
 This card has been tested with [hass-anycubic](https://github.com/Nino6689/hass-anycubic) by [@Nino6689](https://github.com/Nino6689), but is designed to work with any integration that exposes suitable Home Assistant entities.
