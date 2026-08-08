@@ -1,0 +1,68 @@
+name: Feature Request
+description: Suggest an improvement or a new feature for the card
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement. Please describe the use case and the desired behavior in detail.
+
+  - type: input
+    id: ha-version
+    attributes:
+      label: Home Assistant version
+      description: Which Home Assistant version are you using?
+      placeholder: "2026.8.1"
+    validations:
+      required: true
+
+  - type: input
+    id: card-version
+    attributes:
+      label: Card version
+      description: Which version of the card are you using?
+      placeholder: "v1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: os-browser
+    attributes:
+      label: Operating system and browser
+      description: Which operating system, device, and browser or Home Assistant app are you using?
+      placeholder: "Windows 11 / Chrome 127, or iOS 19 / Home Assistant app"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature description, use case, and steps
+      description: Describe the requested feature, why it would be useful, the desired behavior, and any steps or workflow needed to understand or reproduce the current limitation.
+      placeholder: |
+        What would you like to add or change?
+        What problem would this solve?
+        How should it work?
+        Steps or example workflow:
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Screenshot or visual example
+        If possible, please add a screenshot, mockup, or screen recording that illustrates your request. You can drag and drop the file into the field below.
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot, mockup, or screen recording
+      description: Drag and drop a visual example here, or paste an image directly into this field. Please remove sensitive information first.
+      placeholder: Drag and drop or paste your visual example here (optional).
+    validations:
+      required: false

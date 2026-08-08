@@ -1,0 +1,68 @@
+name: Questions & Discussion
+description: Ask a question or start a discussion about the card
+title: "[Question]: "
+labels:
+  - question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for questions and discussions that do not fit a bug report or feature request. Please include enough context for others to understand and reproduce your situation.
+
+  - type: input
+    id: ha-version
+    attributes:
+      label: Home Assistant version
+      description: Which Home Assistant version are you using?
+      placeholder: "2026.8.1"
+    validations:
+      required: true
+
+  - type: input
+    id: card-version
+    attributes:
+      label: Card version
+      description: Which version of the card are you using?
+      placeholder: "v1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: os-browser
+    attributes:
+      label: Operating system and browser
+      description: Which operating system, device, and browser or Home Assistant app are you using?
+      placeholder: "Windows 11 / Chrome 127, or iOS 19 / Home Assistant app"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Question, context, and steps to reproduce
+      description: Explain your question or discussion topic in detail, including relevant context, what you have already tried, and steps that let others reproduce or understand the situation.
+      placeholder: |
+        What would you like to know or discuss?
+        What have you already tried?
+        What result did you expect?
+        Relevant steps:
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Screenshot
+        If possible, please add a screenshot or screen recording that provides useful context. You can drag and drop the file into the field below.
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot or screen recording
+      description: Drag and drop screenshots or recordings here, or paste an image directly into this field. Please remove sensitive information first.
+      placeholder: Drag and drop or paste your screenshot here (optional).
+    validations:
+      required: false

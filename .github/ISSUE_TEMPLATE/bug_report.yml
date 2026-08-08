@@ -1,0 +1,67 @@
+name: Bug Report
+description: Report a reproducible problem with the card
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please provide enough detail for us to reproduce the problem.
+
+  - type: input
+    id: ha-version
+    attributes:
+      label: Home Assistant version
+      description: Which Home Assistant version are you using?
+      placeholder: "2026.8.1"
+    validations:
+      required: true
+
+  - type: input
+    id: card-version
+    attributes:
+      label: Card version
+      description: Which version of the card are you using?
+      placeholder: "v1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: os-browser
+    attributes:
+      label: Operating system and browser
+      description: Which operating system, device, and browser or Home Assistant app are you using?
+      placeholder: "Windows 11 / Chrome 127, or iOS 19 / Home Assistant app"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description and steps to reproduce
+      description: Describe the problem, what you expected, what actually happened, and the exact steps needed to reproduce it.
+      placeholder: |
+        What happened?
+        What did you expect to happen?
+        Steps to reproduce:
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Screenshot
+        If possible, please add a screenshot or screen recording. You can drag and drop the file into the field below.
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot or screen recording
+      description: Drag and drop screenshots or recordings here, or paste an image directly into this field. Please remove sensitive information first.
+      placeholder: Drag and drop or paste your screenshot here (optional).
+    validations:
+      required: false
