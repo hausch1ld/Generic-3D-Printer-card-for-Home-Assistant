@@ -1,17 +1,40 @@
 type: custom:three-d-printer-card
 name: Kobra S1
-subtitle: null
+subtitle: Workshop
+design: normal # normal or compact
 
-# Images may be /local paths, URLs, or image entities.
-printer_image: /local/3d-printer-card/printer.png
-model_image_entity: image.3d_drucker_druckvorschau
-camera_entity: camera.buro_3d_drucker_cloud_camera
+sections:
+  multi_filament: true
+  printer: true
+  progress: true
+  large_buttons: true
+  small_buttons: true
 
 status_entity: sensor.3d_drucker_aktueller_status
+
+ace:
+  label: ACE Pro
+  title_alignment: center # left, center or right
+  image: /local/3d-printer-card/ace.png
+  background_color: "#20242a"
+  spools:
+    - entity: sensor.3d_drucker_ace_pro_ace_fach_1
+    - entity: sensor.3d_drucker_ace_pro_ace_fach_2
+    - entity: sensor.3d_drucker_ace_pro_ace_fach_3
+    - entity: sensor.3d_drucker_ace_pro_ace_fach_4
+    - entity: sensor.3d_drucker_ace_pro_ace_fach_5
+
+printer_image: /local/3d-printer-card/printer.png
+printer_background_color: "#101113"
+printer_height: 400
+model_image_entity: image.3d_drucker_druckvorschau
+# model_image: /local/3d-printer-card/model.png
+camera_entity: camera.buro_3d_drucker_cloud_camera
+
 filename_entity: sensor.3d_drucker_druckauftrag
 progress_entity: sensor.3d_drucker_druckfortschritt_2
 layer_current_entity: sensor.3d_drucker_aktuelle_schicht_2
-layer_total_entity: sensor.printer_total_layers
+layer_total_entity: sensor.3d_drucker_gesamte_schichten
 elapsed_time_entity: sensor.3d_drucker_verstrichene_zeit
 remaining_time_entity: sensor.3d_drucker_restzeit
 estimated_end_entity: sensor.3d_drucker_voraussichtliches_ende
@@ -22,66 +45,46 @@ detail_labels:
   remaining: Verbleibend
   estimated_end: Voraussichtliches Ende
 
-ace:
-  label: ACE Pro
-  # Optional background graphic:
-  image: /local/3d-printer-card/ace.png
-  spools:
-    - entity: sensor.3d_drucker_ace_pro_ace_fach_1
-    - entity: sensor.3d_drucker_ace_pro_ace_fach_2
-    - entity: sensor.3d_drucker_ace_pro_ace_fach_3
-    - entity: sensor.3d_drucker_ace_pro_ace_fach_4
-
-metrics:
-  nozzle:
-    entity: sensor.3d_drucker_dusentemperatur
-    target_entity: number.buro_3d_drucker_dusentemperatur_einstellen
-    label: Nozzle
+large_buttons:
+  - label: Nozzle
     icon: mdi:printer-3d-nozzle-heat
+    entity: sensor.3d_drucker_dusentemperatur
     unit: °C
-  bed:
-    entity: sensor.3d_drucker_betttemperatur
-    target_entity: number.buro_3d_drucker_betttemperatur_einstellen
-    label: Bed
+    secondary_entity: number.buro_3d_drucker_dusentemperatur_einstellen
+    secondary_label: Ziel
+    secondary_unit: °C
+  - label: Bed
     icon: mdi:radiator
+    entity: sensor.3d_drucker_betttemperatur
     unit: °C
-  fan:
-    entity: sensor.3d_drucker_luftergeschwindigkeit
-    target_entity: number.buro_3d_drucker_luftergeschwindigkeit_einstellen
-    label: Fan
+    secondary_entity: number.buro_3d_drucker_betttemperatur_einstellen
+    secondary_label: Ziel
+    secondary_unit: °C
+  - label: Fan
     icon: mdi:fan
+    entity: sensor.3d_drucker_luftergeschwindigkeit
     unit: "%"
+    secondary_entity: number.buro_3d_drucker_luftergeschwindigkeit_einstellen
+    secondary_label: Ziel
+    secondary_unit: "%"
+  - label: Chamber
+    icon: mdi:thermometer
+    entity: sensor.3d_drucker_gehausetemperatur
+    unit: °C
+    secondary_entity: input_number.gehausetemperatur_ziel
+    secondary_label: Ziel
+    secondary_unit: °C
 
-actions:
-  pause:
-    label: Pause
+small_buttons:
+  - label: Pause
     icon: mdi:pause
-    tap_action:
-      action: perform-action
-      perform_action: button.press
-      target:
-        entity_id: button.3d_drucker_druck_pausieren
-  resume:
-    label: Resume
+    entity: button.3d_drucker_druck_pausieren
+  - label: Resume
     icon: mdi:play
-    tap_action:
-      action: perform-action
-      perform_action: button.press
-      target:
-        entity_id: button.3d_drucker_druck_fortsetzen
-  stop:
-    label: Stop
+    entity: button.3d_drucker_druck_fortsetzen
+  - label: Stop
     icon: mdi:stop
-    tap_action:
-      action: perform-action
-      perform_action: button.press
-      target:
-        entity_id: button.3d_drucker_druck_abbrechen
-      confirmation:
-        text: Druck wirklich abbrechen?
-  light:
-    label: Light
+    entity: button.3d_drucker_druck_abbrechen
+  - label: Light
     icon: mdi:lightbulb
-    tap_action:
-      action: toggle
-      entity: light.3d_drucker_druckerbeleuchtung
+    entity: light.3d_drucker_druckerbeleuchtung
