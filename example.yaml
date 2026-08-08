@@ -33,6 +33,7 @@ printer_height: 400
 model_image_entity: image.3d_drucker_druckvorschau
 # model_image: /local/3d-printer-card/model.png
 model_size: 30 # 1 to 100 percent
+model_position: 50 # 0 = top, 50 = centered, 100 = bottom
 camera_entity: camera.buro_3d_drucker_cloud_camera
 
 filename_entity: sensor.3d_drucker_druckauftrag
@@ -41,6 +42,7 @@ progress_entity: sensor.3d_drucker_druckfortschritt_2
 # Up to four freely configurable information fields.
 infos:
   - label: Schicht
+    icon: mdi:layers
     entity: sensor.3d_drucker_aktuelle_schicht_2
   - label: Vergangen
     entity: sensor.3d_drucker_verstrichene_zeit
@@ -49,6 +51,9 @@ infos:
   - label: Ende
     entity: sensor.3d_drucker_voraussichtliches_ende
 
+info_layout: vertical # vertical, horizontal or text-only
+
+large_button_layout: vertical # vertical, horizontal or text-only
 large_buttons:
   - label: Nozzle
     icon: mdi:printer-3d-nozzle-heat
