@@ -33,14 +33,14 @@ This repository can be installed as a HACS custom repository:
 1. Open **HACS** in Home Assistant.
 2. Open the three-dot menu in the top-right corner and choose **Custom repositories**.
 3. Enter:
-   `https://github.com/hausch1ld/Generic-3D-Printer-card-for-Home-Assistant-`
+   `https://github.com/hausch1ld/Generic-3D-Printer-card-for-Home-Assistant`
 4. Select **Dashboard** as the category and click **Add**.
 5. Open **Generic 3D Printer Card**, click **Download**, and reload the browser when installation is complete.
 
 HACS should add the JavaScript resource automatically. If it does not, open **Settings → Dashboards → Resources** and add:
 
 ```text
-/hacsfiles/Generic-3D-Printer-card-for-Home-Assistant-/3d-printer-card.js
+/hacsfiles/Generic-3D-Printer-card-for-Home-Assistant/3d-printer-card.js
 ```
 
 Select **JavaScript module** as the resource type.
