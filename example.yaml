@@ -4,6 +4,7 @@ subtitle: Workshop
 design: normal # normal or compact
 
 sections:
+  header: true
   multi_filament: true
   printer: true
   progress: true
@@ -17,6 +18,7 @@ ace:
   title_alignment: center # left, center or right
   image: /local/3d-printer-card/ace.png
   background_color: "#20242a"
+  use_gradient: true
   spools:
     - entity: sensor.3d_drucker_ace_pro_ace_fach_1
     - entity: sensor.3d_drucker_ace_pro_ace_fach_2
@@ -26,14 +28,16 @@ ace:
 
 printer_image: /local/3d-printer-card/printer.png
 printer_background_color: "#101113"
+printer_use_gradient: true
 printer_height: 400
 model_image_entity: image.3d_drucker_druckvorschau
 # model_image: /local/3d-printer-card/model.png
-model_size: small # small, medium or large
+model_size: 30 # 1 to 100 percent
 camera_entity: camera.buro_3d_drucker_cloud_camera
 
 filename_entity: sensor.3d_drucker_druckauftrag
 progress_entity: sensor.3d_drucker_druckfortschritt_2
+# progress_color: "#03a9f4" # Uses the Home Assistant accent color when omitted
 # Up to four freely configurable information fields.
 infos:
   - label: Schicht
@@ -75,6 +79,7 @@ large_buttons:
     secondary_label: Ziel
     secondary_unit: °C
 
+small_button_layout: vertical # vertical, horizontal or text-only
 small_buttons:
   - label: Pause
     icon: mdi:pause

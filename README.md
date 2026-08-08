@@ -17,7 +17,7 @@ The card does not hardcode Anycubic or other manufacturer-specific entity names.
 - Full-width printer image with a dynamic model-image overlay
 - Tap the printer area to switch between printer and live-camera views
 - Visual dashboard editor; YAML is optional
-- Five independently switchable sections
+- Independently switchable header and five content sections
 - ACE/AMS area with up to five automatically centered spool images
 - Filename, progress and up to four freely configurable information entities
 - Up to four large metric buttons with a sensor value and a clickable secondary entity
@@ -29,7 +29,9 @@ The card does not hardcode Anycubic or other manufacturer-specific entity names.
 - Automatic English/German editor localization
 - Tabbed visual editor that keeps its active position while values are changed
 - Home Assistant entity display precision for sensor and information values
-- Small, medium and large model image sizes
+- Model image size slider from 1% to 100%
+- Optional themed/custom progress color and background gradients
+- Clickable status and information values
 - Stable display for missing, `unknown` and `unavailable` entities
 - Responsive design using the active Home Assistant theme in light and dark mode
 
@@ -40,14 +42,14 @@ This repository can be installed as a HACS custom repository:
 1. Open **HACS** in Home Assistant.
 2. Open the three-dot menu in the top-right corner and choose **Custom repositories**.
 3. Enter:
-   `https://github.com/hausch1ld/Generic-3D-Printer-card-for-Home-Assistant`
+   `https://github.com/hausch1ld/Universal-3D-Printer-card-for-Home-Assistant`
 4. Select **Dashboard** as the category and click **Add**.
-5. Open **Generic 3D Printer Card**, click **Download**, and reload the browser when installation is complete.
+5. Open **Universal 3D Printer Card**, click **Download**, and reload the browser when installation is complete.
 
 HACS should add the JavaScript resource automatically. If it does not, open **Settings → Dashboards → Resources** and add:
 
 ```text
-/hacsfiles/Generic-3D-Printer-card-for-Home-Assistant/3d-printer-card.js
+/hacsfiles/Universal-3D-Printer-card-for-Home-Assistant/3d-printer-card.js
 ```
 
 Select **JavaScript module** as the resource type.
@@ -80,9 +82,9 @@ infos:
     entity: sensor.printer_remaining_time
 ```
 
-After adding the card, use Home Assistant's regular dashboard editor to configure it. The editor is split into five switchable sections:
+After adding the card, use Home Assistant's regular dashboard editor to configure it. The header can be switched independently, and the editor provides tabs for:
 
-1. **Multi-Filament System**
+1. **Filaments**
 2. **3D Printer**
 3. **Progress bar and information**
 4. **Large button bar**
@@ -106,17 +108,19 @@ See [`example.yaml`](example.yaml) for a complete configuration with ACE/AMS, me
 | `printer_image` | Image URL, `/local/...` path or image entity |
 | `model_image_entity` | Current model image entity |
 | `model_image` | Static model image fallback |
-| `model_size` | `small` (default), `medium` or `large` |
+| `model_size` | Model image size from `1` to `100` percent; the legacy `small`, `medium` and `large` values remain supported |
 | `camera_entity` | Camera entity used for the live view |
 | `default_view` | Set to `camera` to start in camera view |
 | `status_entity` | Printer status |
 | `filename_entity` | Print job or filename |
 | `progress_entity` | Progress from 0 to 100 |
 | `infos` | Up to four entries containing a freely selectable `entity` and `label` |
-| `sections` | Switches the five editor/card sections on or off |
+| `sections` | Switches `header` and the five content sections on or off |
 | `design` | `normal` or `compact` |
 | `printer_background_color` | Background color behind the printer/model |
+| `printer_use_gradient` | Enables the radial printer-area gradient; defaults to `true` |
 | `printer_height` | Printer area height in pixels; compact mode displays it 30% shorter |
+| `progress_color` | Optional progress bar color; defaults to the active Home Assistant accent color |
 
 Tapping the printer/model area switches to the live camera and back. Without `camera_entity`, the view remains unchanged.
 
@@ -124,7 +128,7 @@ Tapping the printer/model area switches to the live camera and back. Without `ca
 
 `ace.spools` supports up to five entries. Spools are centered automatically and remain symmetrical for every item count. Set `entity` to a sensor whose state is the filament label and whose `entity_picture` attribute contains the spool image. An explicit `label` overrides the state. The older `image_entity` option remains supported. A static `image` can also be selected or uploaded for each spool.
 
-`ace.image` adds an optional background image, while `ace.background_color` defines a plain fallback/background color. Use `ace.title_alignment` with `left`, `center` or `right` to align the section title. Compact mode reduces this section to half of its normal height and scales its contents proportionally.
+`ace.image` adds an optional background image, while `ace.background_color` defines a plain fallback/background color. `ace.use_gradient` enables the same radial gradient used by the printer area and defaults to `true`. Use `ace.title_alignment` with `left`, `center` or `right` to align the section title.
 
 Leave `ace.label` empty to hide the Multi-Filament title completely. No automatic `ACE / AMS` fallback title is added.
 
@@ -147,13 +151,15 @@ In normal mode, a configured label replaces the icon; with an empty label only t
 
 Each entry under `small_buttons` accepts a `button`, `switch` or `light` entity plus optional `label` and `icon`. A `button` entity is pressed; a `switch` or `light` entity is toggled. A configured icon overrides the entity's icon.
 
+Set `small_button_layout` to `vertical` for the icon above the label, `horizontal` for the icon to its left, or `text-only` to hide icons in the normal layout. Compact mode remains icon-only by design.
+
 The compact design places up to four small action buttons in a centered vertical overlay on the right side of the printer image, together with the camera/model toggle. All five controls use identical square dimensions and omit their text labels. Existing `actions` configurations from version 0.2.x remain operational for backward compatibility.
 
 ### Compact design
 
 Set `design: compact` in YAML or select **Compact** in the editor. The printer area becomes 30% shorter. Up to five filament spools move into a vertically centered translucent overlay on its left side, while the action controls are centered on the right. The configured Multi-Filament background image and color are intentionally ignored in this layout. The large metric buttons use a shorter horizontal icon/value layout. Images continue to use `object-fit: contain`, preserving their aspect ratio.
 
-The model image defaults to `small`, which matches the original card size. `medium` uses the midpoint between the original and full-area dimensions, while `large` uses the complete printer viewport and keeps the image aspect ratio with `object-fit: contain`.
+The model image size is adjustable from 1% to 100%. Existing configurations using `small`, `medium` or `large` are interpreted as 30%, 65% and 100%. The image keeps its aspect ratio with `object-fit: contain`.
 
 Numeric entity values are formatted through Home Assistant itself. This means the card follows the display precision configured in the entity settings, including locale-specific decimal separators.
 
@@ -163,6 +169,6 @@ Unconfigured sections and buttons are hidden. Missing, `unknown` and `unavailabl
 
 ## Version
 
-Current build: **0.5.0**
+Current build: **0.6.0**
 
 This card has been tested with [hass-anycubic](https://github.com/Nino6689/hass-anycubic) by [@Nino6689](https://github.com/Nino6689), but is designed to work with any integration that exposes suitable Home Assistant entities.
