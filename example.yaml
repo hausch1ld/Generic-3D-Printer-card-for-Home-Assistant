@@ -13,7 +13,7 @@ sections:
 status_entity: sensor.3d_drucker_aktueller_status
 
 ace:
-  label: ACE Pro
+  label: ACE Pro # Leave empty to hide the title
   title_alignment: center # left, center or right
   image: /local/3d-printer-card/ace.png
   background_color: "#20242a"
@@ -33,17 +33,16 @@ camera_entity: camera.buro_3d_drucker_cloud_camera
 
 filename_entity: sensor.3d_drucker_druckauftrag
 progress_entity: sensor.3d_drucker_druckfortschritt_2
-layer_current_entity: sensor.3d_drucker_aktuelle_schicht_2
-layer_total_entity: sensor.3d_drucker_gesamte_schichten
-elapsed_time_entity: sensor.3d_drucker_verstrichene_zeit
-remaining_time_entity: sensor.3d_drucker_restzeit
-estimated_end_entity: sensor.3d_drucker_voraussichtliches_ende
-
-detail_labels:
-  layer: Schicht
-  elapsed: Vergangen
-  remaining: Verbleibend
-  estimated_end: Voraussichtliches Ende
+# Up to four freely configurable information fields.
+infos:
+  - label: Schicht
+    entity: sensor.3d_drucker_aktuelle_schicht_2
+  - label: Vergangen
+    entity: sensor.3d_drucker_verstrichene_zeit
+  - label: Verbleibend
+    entity: sensor.3d_drucker_restzeit
+  - label: Ende
+    entity: sensor.3d_drucker_voraussichtliches_ende
 
 large_buttons:
   - label: Nozzle
