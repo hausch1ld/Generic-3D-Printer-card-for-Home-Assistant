@@ -35,6 +35,9 @@ model_image_entity: image.3d_drucker_druckvorschau
 model_size: 30 # 1 to 100 percent
 model_position: 50 # 0 = top, 50 = centered, 100 = bottom
 camera_entity: camera.buro_3d_drucker_cloud_camera
+camera_rotation: 0 # degrees
+camera_zoom: 100 # percent, 1 to 500
+camera_mirror: none # none, horizontal or vertical
 
 filename_entity: sensor.3d_drucker_druckauftrag
 progress_entity: sensor.3d_drucker_druckfortschritt_2
