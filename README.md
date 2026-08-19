@@ -32,6 +32,7 @@ The card does not hardcode Anycubic or other manufacturer-specific entity names.
 - Model image size slider from 1% to 100%
 - Vertical model positioning from the top to the bottom edge
 - Camera rotation, zoom and horizontal/vertical mirroring
+- Native, adaptive or disabled camera controls; adaptive controls stay upright when the camera is rotated
 - Configurable icon placement for information and both button bars
 - Optional themed/custom progress color and background gradients
 - Clickable status and information values
@@ -117,6 +118,7 @@ See [`example.yaml`](example.yaml) for a complete configuration with ACE/AMS, me
 | `camera_rotation` | Camera rotation in degrees; defaults to `0` |
 | `camera_zoom` | Camera zoom in percent from `1` to `500`; defaults to `100` |
 | `camera_mirror` | `none`, `horizontal` or `vertical` |
+| `camera_controls` | `native`, `adaptive` or `disabled`; defaults to `native` |
 | `default_view` | Set to `camera` to start in camera view |
 | `status_entity` | Printer status |
 | `filename_entity` | Print job or filename |
