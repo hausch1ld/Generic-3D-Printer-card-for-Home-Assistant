@@ -38,6 +38,7 @@ camera_entity: camera.buro_3d_drucker_cloud_camera
 camera_rotation: 0 # degrees
 camera_zoom: 100 # percent, 1 to 500
 camera_mirror: none # none, horizontal or vertical
+camera_controls: native # native, adaptive or disabled
 
 filename_entity: sensor.3d_drucker_druckauftrag
 progress_entity: sensor.3d_drucker_druckfortschritt_2
