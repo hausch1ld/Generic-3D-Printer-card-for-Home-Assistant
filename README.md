@@ -31,6 +31,7 @@ The card does not hardcode Anycubic or other manufacturer-specific entity names.
 - Home Assistant entity display precision for sensor and information values
 - Model image size slider from 1% to 100%
 - Vertical model positioning from the top to the bottom edge
+- Camera rotation, zoom and horizontal/vertical mirroring
 - Configurable icon placement for information and both button bars
 - Optional themed/custom progress color and background gradients
 - Clickable status and information values
@@ -113,6 +114,9 @@ See [`example.yaml`](example.yaml) for a complete configuration with ACE/AMS, me
 | `model_size` | Model image size from `1` to `100` percent; the legacy `small`, `medium` and `large` values remain supported |
 | `model_position` | Vertical model alignment from `0` (top) through `50` (center) to `100` (bottom) |
 | `camera_entity` | Camera entity used for the live view |
+| `camera_rotation` | Camera rotation in degrees; defaults to `0` |
+| `camera_zoom` | Camera zoom in percent from `1` to `500`; defaults to `100` |
+| `camera_mirror` | `none`, `horizontal` or `vertical` |
 | `default_view` | Set to `camera` to start in camera view |
 | `status_entity` | Printer status |
 | `filename_entity` | Print job or filename |
@@ -126,7 +130,7 @@ See [`example.yaml`](example.yaml) for a complete configuration with ACE/AMS, me
 | `printer_height` | Printer area height in pixels; compact mode displays it 30% shorter |
 | `progress_color` | Optional progress bar color; defaults to the active Home Assistant accent color |
 
-Tapping the printer/model area switches to the live camera and back. Without `camera_entity`, the view remains unchanged.
+Tapping the printer/model area switches to the live camera and back. Without `camera_entity`, the view remains unchanged. Rotation, zoom and mirroring are applied inside the clipped printer viewport, so transformed camera content cannot extend beyond the card area.
 
 ### ACE/AMS and images
 
@@ -175,6 +179,6 @@ Unconfigured sections and buttons are hidden. Missing, `unknown` and `unavailabl
 
 ## Version
 
-Current build: **0.7.0**
+Current build: **0.8.0**
 
 This card has been tested with [hass-anycubic](https://github.com/Nino6689/hass-anycubic) by [@Nino6689](https://github.com/Nino6689), but is designed to work with any integration that exposes suitable Home Assistant entities.
